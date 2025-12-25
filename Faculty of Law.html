@@ -1,0 +1,3488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <title>Professional Exams System ⚖</title>
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Exams System">
+    <meta name="theme-color" content="#000000">
+
+    <style>
+        :root {
+            --primary: #000000;
+            --secondary: #D4AF37;
+            --accent: #B22222;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --dark: #0d0d0d;
+            --light: #f5f5f5;
+            --glass: rgba(255, 255, 255, 0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 50%, var(--accent) 100%);
+            color: var(--light);
+            /* Prefer dynamic viewport height on modern browsers (iOS Safari) then fallback */
+            min-height: 100dvh;
+            min-height: 100vh;
+            height: -webkit-fill-available;
+            padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+            display: flex;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95));
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow:
+                var(--shadow),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(212, 175, 55, 0.2);
+            transition: box-shadow 0.5s;
+            position: relative;
+            overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+            z-index: -1;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.05) 100%);
+            z-index: -1;
+            border-radius: 25px;
+        }
+
+        .designer-credit {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--secondary);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--secondary);
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .subject-title {
+            color: var(--secondary);
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--secondary), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--secondary), transparent);
+        }
+
+        .login-form,
+        .quiz-container,
+        .welcome-screen,
+        .subject-screen {
+            display: none;
+        }
+
+        .active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 18px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3), inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--light);
+            border: none;
+            padding: 18px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow:
+                0 5px 15px rgba(178, 34, 34, 0.4),
+                0 2px 0 rgba(212, 175, 55, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 25px rgba(212, 175, 55, 0.5),
+                0 2px 0 rgba(212, 175, 55, 0.1) inset;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            border-radius: 6px;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: var(--light);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
+        }
+
+        .option {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+        }
+
+        .option:hover {
+            background: rgba(30, 30, 30, 0.3);
+            transform: translateX(5px);
+            border-color: var(--secondary);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .option.selected {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3), 0 5px 15px rgba(212, 175, 55, 0.3);
+            transform: translateX(5px);
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .navigation .btn {
+            width: 48%;
+            margin-top: 0;
+        }
+
+        .subject-selector,
+        .quiz-selector {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .subject-btn,
+        .quiz-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--light);
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        .subject-btn:hover,
+        .quiz-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .subject-btn.active,
+        .quiz-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--light);
+            border-color: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.6);
+        }
+
+        .subject-icon,
+        .quiz-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .timer-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: var(--secondary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            display: none;
+            border: 1px solid var(--secondary);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: var(--secondary); }
+            50% { border-color: var(--accent); }
+            100% { border-color: var(--secondary); }
+        }
+
+        .timer-warning {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .results-summary {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .review-container {
+            margin-top: 20px;
+        }
+
+        .review-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .review-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .review-item.correct {
+            border-left: 4px solid var(--success);
+        }
+
+        .review-item.incorrect {
+            border-left: 4px solid var(--accent);
+        }
+
+        .review-question {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--light);
+        }
+
+        .review-answer {
+            margin-bottom: 5px;
+            color: var(--light);
+        }
+
+        .correct-answer {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .user-answer {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: var(--accent);
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .user-info h2 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+
+        .back-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .time-up-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: var(--accent);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 1000;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px rgba(178, 34, 34, 0.7);
+            animation: pop-in 0.5s ease;
+        }
+
+        @keyframes pop-in {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subject-title {
+                font-size: 16px;
+            }
+
+            .question-text {
+                font-size: 18px;
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 16px;
+                font-size: 16px;
+            }
+
+            .subject-btn,
+            .quiz-btn {
+                padding: 15px;
+                min-height: 100px;
+            }
+
+            .subject-selector,
+            .quiz-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .subject-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .quiz-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .results-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--secondary), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s;">
+        </div>
+        <div class="floating-element" style="width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 2s;">
+        </div>
+        <div class="floating-element" style="width: 100px; height: 100px; top: 40%; left: 40%; animation-delay: 4s;">
+        </div>
+        <div class="floating-element" style="width: 70px; height: 70px; top: 80%; left: 20%; animation-delay: 6s;">
+        </div>
+        <div class="floating-element" style="width: 90px; height: 90px; top: 20%; left: 70%; animation-delay: 8s;">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="designer-credit">Designed by Mohamed Nasser</div>
+            <div class="timer-container" id="timerContainer">
+                <i class="fas fa-clock"></i> Time Remaining: <span id="timerDisplay">00:00</span>
+            </div>
+
+            <!-- Login Screen -->
+            <div id="loginScreen" class="login-form active">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h1>Professional Exams System</h1>
+                    <div class="subject-title">Interactive Assessment Platform</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Your Full Name</label>
+                    <input type="text" id="username" placeholder="Enter your full name">
+                </div>
+                <button id="loginBtn" class="btn pulse">
+                    <i class="fas fa-play-circle"></i> Start Learning Journey
+                </button>
+                <div id="loginError" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Name must be at least 4 characters long!
+                </div>
+            </div>
+
+            <!-- Subject Selection Screen -->
+            <div id="subjectScreen" class="subject-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="user-info">
+                    <h2>Welcome, <span id="userNameSubject"></span>!</h2>
+                    <p>Select the subject you want to test yourself in</p>
+                </div>
+
+                <div class="subject-selector" id="subjectSelector">
+                    <div class="subject-btn active" data-subject="humanitarian">
+                        <div class="subject-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <div>International Humanitarian Law</div>
+                    </div>
+                    <div class="subject-btn" data-subject="general">
+                        <div class="subject-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div>Public International Law</div>
+                    </div>
+                    <div class="subject-btn" data-subject="strategic">
+                        <div class="subject-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>Strategic Planning</div>
+                    </div>
+                    <div class="subject-btn" data-subject="civil">
+                        <div class="subject-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div>Civil Law</div>
+                    </div>
+                </div>
+
+                <button id="selectSubjectBtn" class="btn">
+                    <i class="fas fa-arrow-right"></i> Proceed to Exam Selection
+                </button>
+            </div>
+
+            <!-- Welcome/Exam Selection Screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <button id="backToSubjectBtn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Subject Selection
+                </button>
+
+                <div class="user-info">
+                    <h2><span id="userNameWelcome"></span></h2>
+                    <p id="selectedSubjectText">Select the exam you want to start</p>
+                </div>
+
+                <div class="quiz-selector" id="welcomeQuizSelector">
+                    <!-- سيتم ملء هذا القسم ديناميكياً بناءً على المادة المختارة -->
+                </div>
+
+                <button id="startQuizBtn" class="btn">
+                    <i class="fas fa-play"></i> Start Selected Exam
+                </button>
+            </div>
+
+            <!-- Exam Screen -->
+            <div id="quizScreen" class="quiz-container">
+                <div class="welcome-message" id="welcomeMessage">
+                    <i class="fas fa-user-graduate"></i> You are answering as: <span id="userName"></span>
+                </div>
+
+                <div class="quiz-info">
+                    <span id="quizTitle">Exam Title</span>
+                    <span id="questionNumber">Question 1 of 10</span>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options-container" id="optionsContainer"></div>
+                </div>
+
+                <div class="navigation">
+                    <button id="prevBtn" class="btn">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button id="nextBtn" class="btn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="results-summary" id="resultsSummary" style="display: none;">
+                    <div class="results-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Exam Results Summary</h3>
+                    <div class="score-display" id="scoreDisplay"></div>
+                    <p id="scoreText"></p>
+                    <p id="correctAnswers"></p>
+                    <p id="incorrectAnswers"></p>
+                    <div class="review-container" id="reviewContainer"></div>
+
+                    <button id="backToQuizzesBtn" class="btn">
+                        <i class="fas fa-redo"></i> Back to Exam Selection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // البيانات الأساسية للامتحانات - جميع المواد الأربع
+        const examData = {
+            humanitarian: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            },
+            general: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            },
+            strategic: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            },
+            civil: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                },
+                quiz3: {
+                    title: "Exam 3",
+                    questions: []
+                }
+            }
+        };
+
+        // Application logic
+        let currentUser = null;
+        let currentSubject = "humanitarian";
+        let currentQuiz = "quiz1";
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let quizResults = {};
+        let shuffledQuestions = {};
+        let timer;
+        let totalTimeLeft = 0;
+        let userName = "";
+        let timeUp = false;
+
+        // DOM elements
+        const loginScreen = document.getElementById('loginScreen');
+        const subjectScreen = document.getElementById('subjectScreen');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const loginError = document.getElementById('loginError');
+        const userNameSubject = document.getElementById('userNameSubject');
+        const userNameWelcome = document.getElementById('userNameWelcome');
+        const selectedSubjectText = document.getElementById('selectedSubjectText');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const userNameSpan = document.getElementById('userName');
+        const quizTitle = document.getElementById('quizTitle');
+        const questionNumber = document.getElementById('questionNumber');
+        const progressBar = document.getElementById('progressBar');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const subjectSelector = document.getElementById('subjectSelector');
+        const welcomeQuizSelector = document.getElementById('welcomeQuizSelector');
+        const resultsSummary = document.getElementById('resultsSummary');
+        const scoreText = document.getElementById('scoreText');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const correctAnswers = document.getElementById('correctAnswers');
+        const incorrectAnswers = document.getElementById('incorrectAnswers');
+        const reviewContainer = document.getElementById('reviewContainer');
+        const selectSubjectBtn = document.getElementById('selectSubjectBtn');
+        const startQuizBtn = document.getElementById('startQuizBtn');
+        const backToQuizzesBtn = document.getElementById('backToQuizzesBtn');
+        const backToSubjectBtn = document.getElementById('backToSubjectBtn');
+        const timerContainer = document.getElementById('timerContainer');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        // Event listeners
+        // Use a small helper to bind fast touch-friendly handlers (pointerdown + click fallback)
+        function bindFastClick(el, handler) {
+            if (!el) return;
+            el.addEventListener('pointerdown', (e) => {
+                if (e.pointerType === 'touch') {
+                    // mark to avoid double-firing when click also follows
+                    el.dataset._t = '1';
+                    handler(e);
+                }
+            });
+            el.addEventListener('click', (e) => {
+                // if touch already handled, ignore the click
+                if (el.dataset._t) {
+                    delete el.dataset._t;
+                    return;
+                }
+                handler(e);
+            });
+            // keyboard accessibility
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13) handler(e);
+            });
+        }
+
+        bindFastClick(loginBtn, handleLogin);
+        bindFastClick(selectSubjectBtn, selectSubject);
+        bindFastClick(startQuizBtn, startQuiz);
+        bindFastClick(backToQuizzesBtn, backToQuizzes);
+        bindFastClick(backToSubjectBtn, backToSubject);
+        bindFastClick(prevBtn, goToPreviousQuestion);
+        bindFastClick(nextBtn, goToNextQuestion);
+
+        // تحميل جميع الأسئلة
+        function loadAllQuestions() {
+            // International Humanitarian Law - Exam 1
+            examData.humanitarian.quiz1.questions = [
+                // 16 Multiple Choice Questions
+                {
+                    text: "Which principle requires combatants to differentiate between military objectives and civilian objects?",
+                    type: "multiple",
+                    options: [
+                        "The Principle of Humanity",
+                        "The Principle of Proportionality",
+                        "The Principle of Distinction",
+                        "The Principle of Precaution"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the material, an indiscriminate attack is one that is:",
+                    type: "multiple",
+                    options: [
+                        "Directed at a specific military objective.",
+                        "Directed at a civilian object.",
+                        "Not directed at a specific military objective.",
+                        "Conducted with advanced warning to civilians."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is an example of an object that receives special protection due to containing 'dangerous forces'?",
+                    type: "multiple",
+                    options: [
+                        "A historical monument",
+                        "A nuclear power plant",
+                        "A military communications post",
+                        "A civilian residence"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following groups is protected under the laws of armed conflict?",
+                    type: "multiple",
+                    options: [
+                        "Journalists",
+                        "Spies",
+                        "Combatants who have not surrendered",
+                        "Individuals who are directly participating in hostilities"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An object's contribution to military action can be judged by its nature, location, purpose, or:",
+                    type: "multiple",
+                    options: ["Age", "Value", "Use", "Size"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which Geneva Convention is the cornerstone of the law on Prisoners of War?",
+                    type: "multiple",
+                    options: [
+                        "First Geneva Convention",
+                        "Second Geneva Convention",
+                        "Third Geneva Convention",
+                        "Fourth Geneva Convention"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the material, the principle that serves as a reminder to alleviate suffering and respect dignity is:",
+                    type: "multiple",
+                    options: [
+                        "The Principle of Distinction",
+                        "The Principle of Unconditional Care",
+                        "The Principle of Humanity",
+                        "The Principle of Proportionality"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the Third Geneva Convention, which of the following is a right of a Prisoner of War?",
+                    type: "multiple",
+                    options: [
+                        "Refusal of all medical care",
+                        "Freedom to return home whenever they wish",
+                        "Being treated as a criminal",
+                        "Right to send and receive letters from their families"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "A medical unit can lose its protected status if it is used to:",
+                    type: "multiple",
+                    options: [
+                        "Provide care to its own staff",
+                        "Provide care to wounded enemy soldiers",
+                        "Transport medical supplies",
+                        "Commit acts harmful to the enemy"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is considered a grave breach of the Conventions and a war crime?",
+                    type: "multiple",
+                    options: [
+                        "Denying a wounded combatant medical care.",
+                        "Providing medical care to the enemy.",
+                        "Allowing captured combatants to correspond with their families.",
+                        "Granting humanitarian organizations access to a conflict zone."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following is an example of an act of perfidy?",
+                    type: "multiple",
+                    options: [
+                        "Giving a warning before an attack.",
+                        "Feigning surrender to gain a military advantage.",
+                        "Targeting a legitimate military objective.",
+                        "Using a recognized humanitarian emblem."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Ottawa Treaty of 1997 prohibits the use, production, and transfer of:",
+                    type: "multiple",
+                    options: [
+                        "Chemical weapons",
+                        "Blinding laser weapons",
+                        "Anti-personnel landmines",
+                        "Nuclear weapons"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The Principle of Prohibiting Unnecessary Suffering is most directly related to which of the following?",
+                    type: "multiple",
+                    options: [
+                        "The use of force",
+                        "The protection of civilians",
+                        "The treatment of prisoners of war",
+                        "The methods of warfare"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The Geneva Protocol of 1925 banned the use of which types of weapons in war?",
+                    type: "multiple",
+                    options: [
+                        "Landmines and cluster munitions",
+                        "Blinding laser and dum-dum bullets",
+                        "Biological and chemical weapons",
+                        "Nuclear weapons and explosives"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following treaties aims to address the legal gap regarding nuclear weapons?",
+                    type: "multiple",
+                    options: [
+                        "The Ottawa Treaty",
+                        "The Convention on Certain Conventional Weapons (CCW)",
+                        "The Treaty on the Prohibition of Nuclear Weapons (2017)",
+                        "The Chemical Weapons Convention (CWC)"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The organization that is granted a unique legal status under the Geneva Conventions as a neutral intermediary is:",
+                    type: "multiple",
+                    options: [
+                        "The United Nations Security Council",
+                        "The International Criminal Court (ICC)",
+                        "The International Committee of the Red Cross (ICRC)",
+                        "The Permanent Court of Arbitration"
+                    ],
+                    correctAnswer: 2
+                },
+                // 16 True/False Questions
+                {
+                    text: "A 'protected person' is a legal term under the Geneva Conventions for an individual who is no longer taking part in hostilities.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Fourth Geneva Convention is dedicated entirely to the status and treatment of Prisoners of War (POWs).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Medical personnel and chaplains are granted protected status under International Humanitarian Law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The concept of 'protected persons' is exclusive to international armed conflicts.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A civilian who takes a direct part in hostilities loses their protected status for the duration of that participation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The First and Second Geneva Conventions establish that all wounded, sick, and shipwrecked members of the armed forces are to be respected and protected without distinction.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Forced deportation and collective punishment are practices that are explicitly prohibited under the Fourth Geneva Convention.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "According to the Principle of Distinction, all persons who are not members of the armed forces are considered civilians.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A military objective is defined as any object that provides an effective contribution to military action.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Principle of Proportionality states that attacks are prohibited if they are expected to cause any civilian harm whatsoever.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The direct targeting of civilians or civilian objects is considered a war crime.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A medical hospital loses its protected status if it is used to store medical supplies for its own staff.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Principle of Precautions requires all feasible steps to be taken to avoid or minimize civilian harm during military operations.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Protection of Civilians is now considered the central moral imperative of modern armed conflict.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A Prisoner of War (POW) can be subjected to public humiliation by the capturing power.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Third Geneva Convention provides a comprehensive legal framework for the treatment of wounded and sick on land.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                }
+            ];
+
+            // International Humanitarian Law - Exam 2 (different questions)
+            examData.humanitarian.quiz2.questions = examData.humanitarian.quiz1.questions.map((q, i) => {
+                const newQ = {...q};
+                newQ.text = `(Exam 2) ${q.text}`;
+                return newQ;
+            });
+
+            // Public International Law - Exam 1
+            examData.general.quiz1.questions = [
+                // 15 Multiple Choice Questions
+                {
+                    text: "What is the legal effect of a Circumstance Precluding Wrongfulness (CPW)?",
+                    type: "multiple",
+                    options: [
+                        "It voids the international obligation itself.",
+                        "It prevents the attribution of the conduct to the State.",
+                        "It renders the otherwise wrongful act legally non-wrongful.",
+                        "It merely reduces the amount of compensation owed."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The form of reparation known as Compensation is designed to cover:",
+                    type: "multiple",
+                    options: [
+                        "Moral injury and insults.",
+                        "All financially assessable damage, including lost profits (lucrum cessans).",
+                        "The restoration of illegally seized property.",
+                        "Guarantees of non-repetition."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The ARSIWA standard for attributing the actions of private individuals or groups to a State is:",
+                    type: "multiple",
+                    options: [
+                        "General support or influence.",
+                        "Effective control over the specific conduct constituting the IWA.",
+                        "Implicit prior knowledge of the plan.",
+                        "Failure to prosecute the individuals afterward."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which defence applies when an irresistible force or unforeseen event makes performance of the obligation materially impossible?",
+                    type: "multiple",
+                    options: ["Necessity", "Distress", "Consent", "Force Majeure"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The primary and immediate obligation for a State committing a continuing IWA is:",
+                    type: "multiple",
+                    options: ["Restitution", "Cessation and non-repetition", "Satisfaction", "Negotiation of a new treaty"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The doctrine of State Responsibility is generally considered to be:",
+                    type: "multiple",
+                    options: [
+                        "Based on the subjective fault (mens rea) of the State.",
+                        "Objective, requiring only the two elements of Attribution and Breach.",
+                        "Applicable only to breaches of multilateral treaties.",
+                        "Applicable only when the breach involves the use of armed force."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which VCLT article enshrines the principle Pacta Sunt Servanda?",
+                    type: "multiple",
+                    options: ["Article 19", "Article 26", "Article 53", "Article 62"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which action formally expresses a State's consent to be bound by a treaty internationally?",
+                    type: "multiple",
+                    options: ["Negotiation", "Adoption", "Ratification", "Authentication (Signing)"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which body is established by the UN Charter as the principal judicial organ of the United Nations?",
+                    type: "multiple",
+                    options: [
+                        "The Permanent Court of Arbitration (PCA).",
+                        "The International Criminal Court (ICC).",
+                        "The UN Security Council.",
+                        "The International Court of Justice (ICJ)."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which diplomatic method involves a third party actively proposing terms of settlement to the disputing parties?",
+                    type: "multiple",
+                    options: ["Good Offices", "Mediation", "Inquiry", "Negotiation"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The ICJ's jurisdiction ratione personae (over the parties) in contentious cases is limited to:",
+                    type: "multiple",
+                    options: [
+                        "UN Member States and International Organizations.",
+                        "All States and Individuals.",
+                        "States only.",
+                        "International Organizations only."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A State makes a prior, general declaration accepting the compulsory jurisdiction of the ICJ concerning any other State accepting the same obligation. This is a reference to the:",
+                    type: "multiple",
+                    options: [
+                        "Jurisdictional Clause.",
+                        "Special Agreement.",
+                        "Optional Clause (Art. 36(2)).",
+                        "Forum Prorogatum."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle codified in Article 2(4) is widely regarded as possessing the status of:",
+                    type: "multiple",
+                    options: [
+                        "Pacta Sunt Servanda.",
+                        "Erga Omnes obligation",
+                        "Customary Law.",
+                        "Both B and C, and possibly Jus Cogens."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which UN Charter Chapter addresses the Security Council's powers to take measures with respect to threats to the peace?",
+                    type: "multiple",
+                    options: ["Chapter VI", "Chapter VII", "Chapter VIII", "Chapter IX"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "For an act of self-defence to be lawful, the initial use of force must be in response to:",
+                    type: "multiple",
+                    options: [
+                        "A diplomatic disagreement.",
+                        "An economic blockade.",
+                        "An armed attack that has occurred.",
+                        "A hostile political statement."
+                    ],
+                    correctAnswer: 2
+                },
+                // 15 True/False Questions
+                {
+                    text: "Enforcement Jurisdiction is generally broad, allowing a State to send police officers into another State to arrest suspects without prior consent.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Universal Principle of jurisdiction applies only to crimes committed within the territory of the prosecuting State.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The doctrine of State Immunity is founded on the principle of the sovereign equality of States.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Under the Protective Principle, a State may prosecute non-nationals for acts committed abroad if those acts threaten its national security interests, such as counterfeiting its currency.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Restrictive Immunity means that a State's sovereign acts (Acta Jure Imperii) are still immune, but its commercial acts (Acta Jure Gestionis) are not.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Vienna Convention on Diplomatic Relations (VCDR) grants diplomats personal immunity (ratione personae) for both their official and private acts while in office.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A Head of State retains personal immunity even after leaving office.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Subjective Territorial Principle allows a State to claim jurisdiction over a crime that was initiated within its borders but completed in another State.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The only recourse available to a receiving State against a diplomat who abuses their immunity is to declare them Persona Non Grata.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The shift from Absolute Immunity to Restrictive Immunity occurred primarily because States rarely engaged in commercial activities.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Vienna Convention on the Law of Treaties (VCLT) is often referred to as the 'Treaty on Treaties'.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The foundational principle of treaty law, Pacta Sunt Servanda, means that treaties are optional for the parties.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A treaty is formally defined by the VCLT as an international agreement concluded between States in any form (written or oral).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Ratification is the initial step in the conclusion of a treaty, preceding negotiation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A reservation is a unilateral statement by a State to exclude or modify the legal effect of certain treaty provisions.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                }
+            ];
+
+            // Public International Law - Exam 2
+            examData.general.quiz2.questions = examData.general.quiz1.questions.map((q, i) => {
+                const newQ = {...q};
+                newQ.text = `(Exam 2) ${q.text}`;
+                return newQ;
+            });
+
+            // Strategic Planning - All Questions from 3 files
+            const strategicQuestions = [
+                // Chapter 4 Questions (15)
+                {
+                    text: "What is human capital, as defined in the text?",
+                    type: "multiple",
+                    options: [
+                        "Financial resources of a company",
+                        "The network of relationships within an organization",
+                        "The individual capabilities, knowledge, skills, and experience of a company's employees and managers",
+                        "A company's physical assets"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Social capital is defined as:",
+                    type: "multiple",
+                    options: [
+                        "The financial resources of a company",
+                        "The individual capabilities of employees",
+                        "The network of relationships that individuals have throughout the organization",
+                        "A company's technological resources"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Explicit knowledge is:",
+                    type: "multiple",
+                    options: [
+                        "Knowledge in the minds of employees",
+                        "Knowledge shared only with consent",
+                        "Knowledge that is easily documented and stored",
+                        "Knowledge gained through social interactions"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Tacit knowledge is:",
+                    type: "multiple",
+                    options: [
+                        "Easily documented knowledge",
+                        "Knowledge in the minds of employees",
+                        "Knowledge stored in databases",
+                        "Knowledge that can be easily replicated"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "According to the text, what is crucial for creating new knowledge?",
+                    type: "multiple",
+                    options: [
+                        "Separation of explicit and tacit knowledge",
+                        "Continual interaction of explicit and tacit knowledge",
+                        "Focusing only on explicit knowledge",
+                        "Ignoring tacit knowledge"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is NOT one of the key processes in managing human capital, according to the text?",
+                    type: "multiple",
+                    options: ["Hiring/selection", "Development", "Retention", "Liquidation"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "What does the text suggest is a traditional approach to employee selection that is being questioned?",
+                    type: "multiple",
+                    options: [
+                        "Hiring for attitude",
+                        "Training for skill",
+                        "'Lock and key' approach",
+                        "Using algorithms"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is a key characteristic of labor flexibility in the United States?",
+                    type: "multiple",
+                    options: [
+                        "Lifetime tenure at companies",
+                        "High payroll taxes",
+                        "Freedom to hire and fire",
+                        "Strict labor contracts"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is one of the benefits of hiring 'boomerang employees'?",
+                    type: "multiple",
+                    options: [
+                        "Increased need for socialization and training",
+                        "Lower chances of making a 'poor hire'",
+                        "Higher salary expectations",
+                        "Less familiarity with the company"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a potential drawback of using algorithms for selection?",
+                    type: "multiple",
+                    options: [
+                        "They always reduce bias",
+                        "They can potentially increase bias",
+                        "They are always accurate",
+                        "They decrease efficiency"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a 360-degree evaluation system?",
+                    type: "multiple",
+                    options: [
+                        "An evaluation from a single perspective",
+                        "An evaluation that only considers financial performance",
+                        "An evaluation approach that includes multiple perspectives",
+                        "An annual review"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is identified as a key factor in employee satisfaction according to Glassdoor?",
+                    type: "multiple",
+                    options: [
+                        "High salaries only",
+                        "Career opportunities",
+                        "Company size",
+                        "Location of the company"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What does social network analysis depict?",
+                    type: "multiple",
+                    options: [
+                        "A company's financial performance",
+                        "The pattern of interactions among individuals",
+                        "The level of employee satisfaction",
+                        "The efficiency of production processes"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a bridging relationship in social network analysis?",
+                    type: "multiple",
+                    options: [
+                        "Relationships among members within a closed group",
+                        "Ties connecting heterogeneous people",
+                        "Relationships that lead to groupthink",
+                        "Relationships that only involve communication flow"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a potential downside of social capital?",
+                    type: "multiple",
+                    options: [
+                        "Increased innovation",
+                        "Always leads to better decision-making",
+                        "Can lead to 'groupthink' and suboptimal ideas",
+                        "Reduces the cost of socialization"
+                    ],
+                    correctAnswer: 2
+                },
+
+                // Chapter 5 Questions (33)
+                {
+                    text: "Which of the following does best suit overall cost leadership strategy?",
+                    type: "multiple",
+                    options: [
+                        "Low-cost position, narrow target market",
+                        "Superior perceived value, broad target market",
+                        "Low-cost position, broad target market",
+                        "Superior perceived value, narrow target market"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following does best suit differentiation focus strategy?",
+                    type: "multiple",
+                    options: [
+                        "Low-cost position, narrow target market",
+                        "Superior perceived value, broad target market",
+                        "Low-cost position, broad target market",
+                        "Superior perceived value, narrow target market"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is not true regarding overall low-cost leadership strategy?",
+                    type: "multiple",
+                    options: [
+                        "It involves aggressive construction of efficient scale facilities.",
+                        "It provides substantial entry barriers due to economies of scale",
+                        "It puts the firm in a favorable position with respect to substitute products",
+                        "It makes the firm easily susceptible to rivalry from competitors."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is true about differentiation strategy?",
+                    type: "multiple",
+                    options: [
+                        "It requires superior material handling operations to minimize damage",
+                        "It requires non-responsive order processing",
+                        "It allows high defect rates in the quality",
+                        "It needs neglection of key customers"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "When differentiation is easily imitated, it is considered ______ of differentiation strategy.",
+                    type: "multiple",
+                    options: ["an advantage", "a pitfall", "a requirement", "an option"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A(an) ______ strategy is chosen when the firm selects a segment or group of segments (or niche) and tailors its strategy to serve them.",
+                    type: "multiple",
+                    options: [
+                        "overall cost leadership",
+                        "overall differentiation",
+                        "focus",
+                        "an option"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A(an) ______ strategy establishes customer loyalty and hence less threat from substitutes.",
+                    type: "multiple",
+                    options: [
+                        "overall cost leadership",
+                        "overall differentiation",
+                        "focus differentiation",
+                        "an no answer is correct"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A(an) ______ provides substantial entry barriers due to economies of scale and cost advantages.",
+                    type: "multiple",
+                    options: [
+                        "overall cost leadership",
+                        "overall differentiation",
+                        "focus differentiation",
+                        "an no answer is correct"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following is one of Porter's three generic strategies?",
+                    type: "multiple",
+                    options: [
+                        "Market dominance",
+                        "Overall cost leadership",
+                        "Product diversification",
+                        "Vertical integration"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What does overall cost leadership emphasize?",
+                    type: "multiple",
+                    options: [
+                        "Unique product features",
+                        "Creating a low-cost position relative to a firm's peers",
+                        "Extensive advertising",
+                        "High customer service"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Differentiation implies:",
+                    type: "multiple",
+                    options: [
+                        "Lowest possible prices",
+                        "Products and/or services that are unique and valued",
+                        "Standardized products",
+                        "Minimal customer service"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A focus strategy requires:",
+                    type: "multiple",
+                    options: [
+                        "Broad product lines",
+                        "Serving the entire market",
+                        "Narrow product lines or targeted geographic markets",
+                        "High prices"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is a pitfall of cost leadership?",
+                    type: "multiple",
+                    options: [
+                        "High customer loyalty",
+                        "Substantial entry barriers",
+                        "Strategy can be too easily imitated",
+                        "Favorable position with respect to substitute products"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "In which stage of the industry life cycle are products unfamiliar to consumers?",
+                    type: "multiple",
+                    options: ["Growth", "Maturity", "Introduction", "Decline"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What happens to market growth rate during the maturity stage?",
+                    type: "multiple",
+                    options: [
+                        "It is very high",
+                        "It is low to moderate",
+                        "It is negative",
+                        "It increases rapidly"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which generic strategy is typically emphasized in the introduction stage?",
+                    type: "multiple",
+                    options: [
+                        "Overall cost leadership",
+                        "Differentiation",
+                        "Focus",
+                        "Cost focus"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a characteristic of the growth stage?",
+                    type: "multiple",
+                    options: [
+                        "Limited competition",
+                        "Strong increases in sales",
+                        "Market saturation",
+                        "Industry consolidation"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "In the maturity stage, there is an increased emphasis on:",
+                    type: "multiple",
+                    options: ["Product design", "Efficiency", "Market awareness", "Sales and marketing"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a retrenchment strategy?",
+                    type: "multiple",
+                    options: [
+                        "Aggressively expanding into new markets",
+                        "Electively cutting unprofitable market segments and asset investments",
+                        "Increasing product diversification",
+                        "Ignoring changes in the industry"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is a form of differentiation?",
+                    type: "multiple",
+                    options: [
+                        "Low cost",
+                        "Prestige or brand image",
+                        "Efficient scale facilities",
+                        "Tight cost control"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What can an overall differentiation strategy create?",
+                    type: "multiple",
+                    options: [
+                        "Lower entry barriers",
+                        "Higher threat from substitutes",
+                        "Higher entry barriers due to customer loyalty",
+                        "Price competition"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A focus strategy involves:",
+                    type: "multiple",
+                    options: [
+                        "Serving the entire industry",
+                        "A narrow competitive scope within an industry",
+                        "Ignoring customer needs",
+                        "High product differentiation across the board"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What are the two variants of a focus strategy?",
+                    type: "multiple",
+                    options: [
+                        "Cost leadership and differentiation",
+                        "Market focus and product focus",
+                        "Cost focus and differentiation focus",
+                        "Innovation focus and technology focus"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is the goal of a combination strategy?",
+                    type: "multiple",
+                    options: [
+                        "To offer the highest prices",
+                        "To provide unique value in an efficient manner",
+                        "To avoid competition",
+                        "To focus on a single market segment"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is NOT a stage in the industry life cycle?",
+                    type: "multiple",
+                    options: [
+                        "Introduction",
+                        "Growth",
+                        "Recession",
+                        "Decline"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "During which stage of the industry life cycle is there a high emphasis on research and development?",
+                    type: "multiple",
+                    options: [
+                        "Introduction",
+                        "Growth",
+                        "Maturity",
+                        "Decline"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "In the decline stage, what happens to price competition?",
+                    type: "multiple",
+                    options: [
+                        "It decreases",
+                        "It increases",
+                        "It remains the same",
+                        "It becomes irrelevant"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which strategy involves exiting the market?",
+                    type: "multiple",
+                    options: [
+                        "Maintaining",
+                        "Harvesting",
+                        "Consolidating",
+                        "Decline"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is a risk of differentiation?",
+                    type: "multiple",
+                    options: [
+                        "Low prices",
+                        "Too high a price premium",
+                        "Low customer loyalty",
+                        "Easy cost imitation"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What does cost focus create?",
+                    type: "multiple",
+                    options: [
+                        "A differentiation advantage in its target segment",
+                        "A cost advantage in its target segment",
+                        "A broad market",
+                        "High product prices"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is part of cost leadership?",
+                    type: "multiple",
+                    options: [
+                        "Average overhead control",
+                        "Cost minimization in all activities",
+                        "Flexible scale facilities",
+                        "Average efficient facilities"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a disadvantage of differentiation?",
+                    type: "multiple",
+                    options: [
+                        "Low customer loyalty",
+                        "Customer willingness to pay a price premium",
+                        "Reduced rivalry",
+                        "The potential for imitation"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "In which stage of the industry life cycle do sales experience strong increases?",
+                    type: "multiple",
+                    options: [
+                        "Introduction",
+                        "Growth",
+                        "Maturity",
+                        "Decline"
+                    ],
+                    correctAnswer: 1
+                },
+
+                // Chapter 6 Questions (25)
+                {
+                    text: "When diversification makes business 1 plus business 2 equals more than two. This is called:",
+                    type: "multiple",
+                    options: ["Strategy", "Synergy", "Symmetry", "Symbiosis"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "______ involves a better understanding of the competitive position of an overall portfolio or family of businesses.",
+                    type: "multiple",
+                    options: [
+                        "Portfolio management",
+                        "Competitive advantage",
+                        "Human resources management",
+                        "Operational management"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following is true about BCG matrix?",
+                    type: "multiple",
+                    options: [
+                        "Each circle represents one of the firm's business units",
+                        "The size of the circle represents the relative size of the business unit in terms of costs",
+                        "It combines industry growth rate and relative logistics partnerships"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "According to BCG matrix, 'Cash cow' businesses involve:",
+                    type: "multiple",
+                    options: [
+                        "High relative market share and high industry growth rate",
+                        "High relative market share and low industry growth rate",
+                        "Low relative market share and high industry growth rate",
+                        "Low relative market share and low industry growth rate"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "According to BCG matrix, 'Question mark' businesses involve:",
+                    type: "multiple",
+                    options: [
+                        "High relative market share and high industry growth rate",
+                        "High relative market share and low industry growth rate",
+                        "Low relative market share and high industry growth rate",
+                        "Low relative market share and low industry growth rate"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to BCG matrix, 'Star' businesses involve:",
+                    type: "multiple",
+                    options: [
+                        "High relative market share and high industry growth rate",
+                        "High relative market share and low industry growth rate",
+                        "Low relative market share and high industry growth rate",
+                        "Low relative market share and low industry growth rate"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "According to BCG matrix, 'Dog' businesses involve:",
+                    type: "multiple",
+                    options: [
+                        "High relative market share and high industry growth rate",
+                        "High relative market share and low industry growth rate",
+                        "Low relative market share and high industry growth rate",
+                        "Low relative market share and low industry growth rate"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "______ involve one firm buying another either through stock purchase, cash, or the issuance of debt.",
+                    type: "multiple",
+                    options: ["Mergers", "Acquisitions", "Divestments", "Internal developments"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "______ involve a combination or consolidation of two firms to form a new legal entity.",
+                    type: "multiple",
+                    options: ["Mergers", "Acquisitions", "Divestments", "Internal developments"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Divesting businesses can accomplish many different objectives, except:",
+                    type: "multiple",
+                    options: [
+                        "Enabling managers to focus their efforts more directly on the firm's core businesses",
+                        "Providing the firm with more resources to spend on more attractive alternatives.",
+                        "Decreasing cash to help fund existing businesses.",
+                        "Cutting the financial losses of a failed acquisition"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the text, what is one way unrelated diversification helps a firm?",
+                    type: "multiple",
+                    options: [
+                        "Leveraging core competencies",
+                        "Sharing activities",
+                        "The corporate parenting advantage",
+                        "Economies of scope"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What does 'economies of scope' allow businesses to do?",
+                    type: "multiple",
+                    options: [
+                        "Increase financial losses",
+                        "Leverage core competencies",
+                        "Create new legal entities",
+                        "Avoid vertical integration"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is involved in asset restructuring?",
+                    type: "multiple",
+                    options: [
+                        "Changing the debt-equity mix",
+                        "Sale of unproductive assets",
+                        "Changes in top management",
+                        "Adding debt or equity"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a key limitation of portfolio models?",
+                    type: "multiple",
+                    options: [
+                        "They consider all factors.",
+                        "They always suggest accurate strategic alternatives.",
+                        "SBU's are compared on only two dimensions.",
+                        "They fully capture synergies."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "How can diversification reduce variability?",
+                    type: "multiple",
+                    options: [
+                        "By increasing stockholder costs",
+                        "In revenues and profits over time",
+                        "By predicting economic cycles",
+                        "By avoiding overall strategy"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is involved in a merger?",
+                    type: "multiple",
+                    options: [
+                        "One firm buying another",
+                        "Combining two firms to form a new legal entity",
+                        "Selling unproductive assets",
+                        "Pooling resources without combining"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is NOT a divestment objective?",
+                    type: "multiple",
+                    options: [
+                        "Cutting financial losses",
+                        "Redirecting focus on core businesses",
+                        "Increasing acquisition spending",
+                        "Freeing up resources for alternatives"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is a key factor for divestiture success?",
+                    type: "multiple",
+                    options: [
+                        "Adding emotion to the decision",
+                        "Ignoring the value of the business",
+                        "Knowing the business's value",
+                        "Rushing the deal"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is a motive for strategic alliances?",
+                    type: "multiple",
+                    options: [
+                        "To increase costs in the value chain",
+                        "Ability to enter new markets",
+                        "To avoid diffusing new technologies",
+                        "Need for improper partners"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a limitation of strategic alliances?",
+                    type: "multiple",
+                    options: [
+                        "Partners always have compatible strengths",
+                        "Partners' strengths should be unique",
+                        "They remove the need for trust",
+                        "They easily avoid creating synergies"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is an advantage of internal development?",
+                    type: "multiple",
+                    options: [
+                        "Need to share wealth",
+                        "Combining activities across value chains",
+                        "Merging diverse cultures",
+                        "No need for external funding"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "What is an antitakeover tactic?",
+                    type: "multiple",
+                    options: [
+                        "Greenmail",
+                        "Value creation",
+                        "Synergy development",
+                        "Internal development"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "How can acquisitions destroy value?",
+                    type: "multiple",
+                    options: [
+                        "Integrating activities effectively",
+                        "Paying a premium for the target firm",
+                        "Avoiding imitation",
+                        "Creating synergy"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a benefit of related diversification?",
+                    type: "multiple",
+                    options: [
+                        "Benefits derive from hierarchical relationships only",
+                        "Sharing intangible resources",
+                        "Value creation derived from individual business units",
+                        "Avoiding economies of scope"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is a way market power can be gained?",
+                    type: "multiple",
+                    options: [
+                        "Backward integration",
+                        "Decreased bargaining power",
+                        "Avoiding vertical integration",
+                        "Increased competition"
+                    ],
+                    correctAnswer: 0
+                }
+            ];
+
+            // تقسيم أسئلة التخطيط الاستراتيجي إلى امتحانين
+            const totalStrategicQuestions = strategicQuestions.length; // 73 سؤال
+            
+            // الامتحان الأول: 36 سؤال
+            examData.strategic.quiz1.questions = strategicQuestions.slice(0, 36);
+            
+            // الامتحان الثاني: 37 سؤال
+            examData.strategic.quiz2.questions = strategicQuestions.slice(36, totalStrategicQuestions);
+
+            // Civil Law - Exam 1: 21 T/F + 12 MCQ
+            examData.civil.quiz1.questions = [
+                // 21 سؤال True/False
+                // Consent - Offer (10 أسئلة)
+                {
+                    text: "The manifestation of will can be both express and implied according to the Egyptian Civil Code.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A declaration of intention becomes effective once it is sent, regardless of whether the intended recipient has received it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Death of the declarant affects the validity of the declaration of intention in all cases.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An offer must include all essential elements of the contract to be valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An irrevocable offer can be revoked by the offeror at any time.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If the offeree does not accept an offer within a specified time, the offer automatically expires.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The concordance of wills occurs when one person makes an offer and the other accepts it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An acceptance made after the expiration of the offer is considered valid and concludes the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An irrevocable offer can be terminated by the offeree rejecting it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An offer can be revoked by the offeror at any time before the end of the contract meeting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                // Vices of Consent (6 أسئلة)
+                {
+                    text: "A mistake is considered one of the vices of consent in contracts, even if it is not an essential mistake.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Fraud requires that the other party has practiced artifices that led to the conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Exploitation occurs when one party's obligations in the contract are out of proportion to the benefits they receive or to the obligations of the other party.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Duress is considered one of the vices of consent that leads to the annulment of the contract if it only relates to danger to life, or body.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The contract is considered void if a person has made a mistake that affects the quality of the thing which both parties have considered essential in the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A mistake in the identity or one of the qualities of the other contracting party is considered an essential mistake even if this identity or quality was not the principal factor in the conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                // Validity of Consent (5 أسئلة)
+                {
+                    text: "Existence of consent (offer and acceptance) alone is enough to form a contract and doesn't require it to be made by a person with legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Legal capacity is the ability to hold rights and duties and to exercise those rights and duties.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A minor who is between the ages of 7 and 21 has limited legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A minor who is 15 years old can manage their own earnings from work.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "All acts made by a minor (under the age of seven) are void.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                
+                // 12 سؤال MCQ
+                // Consent - Offer MCQ
+                {
+                    text: "An irrevocable offer is one that:",
+                    type: "multiple",
+                    options: [
+                        "Can be revoked at any time.",
+                        "Cannot be revoked during a specified time period",
+                        "Is always valid."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is the effect of a declaration of intention according to the Egyptian Civil Code?",
+                    type: "multiple",
+                    options: [
+                        "It is effective upon being made.",
+                        "It requires formal registration.",
+                        "It is effective when it comes to the knowledge of the intended person.",
+                        "It is never effective."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What type of offer cannot be revoked during a specified period?",
+                    type: "multiple",
+                    options: [
+                        "Revocable offer",
+                        "Tentative offer",
+                        "Conditional offer",
+                        "Irrevocable offer"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "What happens if the contract meeting expires without acceptance?",
+                    type: "multiple",
+                    options: [
+                        "The offer remains valid.",
+                        "The offer is automatically accepted.",
+                        "The offer is terminated.",
+                        "The parties can renegotiate indefinitely."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What term describes the mutual agreement between contracting parties?",
+                    type: "multiple",
+                    options: [
+                        "Offer",
+                        "Consent", 
+                        "Invitation to treat",
+                        "Counteroffer"
+                    ],
+                    correctAnswer: 1
+                },
+                // Vices of Consent MCQ
+                {
+                    text: "False or misleading statement or an omission made by one party is considered:",
+                    type: "multiple",
+                    options: [
+                        "Mistake.",
+                        "Fraud.",
+                        "Duress.",
+                        "Exploitation."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A mistake is considered essential if it has a bearing on:",
+                    type: "multiple",
+                    options: [
+                        "The identity or the essential quality of the person involved in the contract.",
+                        "The value of the contract.",
+                        "The essential quality of the thing in the contract.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The exploitation vice requires:",
+                    type: "multiple",
+                    options: [
+                        "A threat to life or property.",
+                        "A disproportion between obligations and benefits.",
+                        "A mutual mistake.",
+                        "A contract is made under duress."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The vice of consent that involves a threat of serious and imminent danger to life, limb, honour, or property is called:",
+                    type: "multiple",
+                    options: [
+                        "Duress.",
+                        "Mistake.",
+                        "Fraud.",
+                        "Exploitation."
+                    ],
+                    correctAnswer: 0
+                },
+                // Validity of Consent MCQ
+                {
+                    text: "The acts performed by a minor under the age of 7 are:",
+                    type: "multiple",
+                    options: [
+                        "Void.",
+                        "Valid.",
+                        "Voidable.",
+                        "Null."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acts performed by a minor between the ages of 7 and 21 that are between benefit and detriment are:",
+                    type: "multiple",
+                    options: [
+                        "Void.",
+                        "Valid.",
+                        "Voidable.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A person who has reached the age of 21 is considered to be:",
+                    type: "multiple",
+                    options: [
+                        "Full legal capacity.",
+                        "Limited legal capacity.",
+                        "Restricted legal capacity.",
+                        "Lacking legal capacity."
+                    ],
+                    correctAnswer: 0
+                }
+            ];
+
+            // Civil Law - Exam 2: 21 T/F + 12 MCQ
+            examData.civil.quiz2.questions = [
+                // 21 سؤال True/False
+                // Validity of Consent (الباقي - 5 أسئلة)
+                {
+                    text: "All acts made by a minor (between 7 and 21) are valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The insane person has the same legal capacity like a minor lacking discretion.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A person with dual disabilities can legally dispose of their property without judicial assistance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An adult (21 years and above) has full legal capacity to exercise their civil rights.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acts of a prodigal and an idiot are governed by the provisions related to the acts of a minor possessing discretion, so they have limited legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                // Consent - Acceptance (10 أسئلة)
+                {
+                    text: "Acceptance is the offeree's intent to agree to all terms of the offer.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Acceptance must be expressed after the offer has expired.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Silence can sometimes be considered acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acceptance must coincide with the terms of the offer.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Egyptian civil code considers a contract to be concluded when the offeree dispatches his acceptance to the offeror, if he isn't present at the contracting meeting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If the acceptance modifies the original offer, a new offer is created that requires a new acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "In a contract of adhesion, the offeree has equal bargaining power as the offeror.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The moment of acceptance is the same as the moment of conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acceptance that comes after the termination of the contract meeting is considered valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Egyptian civil code states that contracts between absentees are concluded when the offeror has knowledge of the acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                // The subject and cause of the contract (6 أسئلة)
+                {
+                    text: "A contract is void if the object of the obligation is an impossible act.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Futuristic things can't be an object of an obligation according to the Egyptian Civil Code.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The debtor is obligated to give something of medium quality if the object isn't specified in terms of quality.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The object of the contract must always be within the circle of dealing by law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "If the object of the contract is a sum of money, the debtor is bound only to the extent of the actual figure of the sum of money stated in the contract, regardless of any changes in value.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The cause of a contract is the motive behind contracting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                
+                // 12 سؤال MCQ
+                // Validity of Consent MCQ
+                {
+                    text: "Which of the following is considered an impediment to legal capacity:",
+                    type: "multiple",
+                    options: [
+                        "An absent person.",
+                        "Insane and imbecile persons.",
+                        "Person sentenced.",
+                        "A person with dual disability."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A person who is declared absent and there is no one to manage their affairs for more than a year, the court may appoint an......to manage their interests.",
+                    type: "multiple",
+                    options: [
+                        "Guardian.",
+                        "Judicial assistant.",
+                        "Trustee.",
+                        "Agent."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "If a person is affected by dual disability and is unable to express his intent, it shall be permissible for the judge to appoint a ...... to help him in his dispositions.",
+                    type: "multiple",
+                    options: [
+                        "Guardian.",
+                        "Judicial assistant.",
+                        "Trustee.",
+                        "Agent."
+                    ],
+                    correctAnswer: 1
+                },
+                // Consent - Acceptance MCQ
+                {
+                    text: "What is the definition of acceptance in contracts?",
+                    type: "multiple",
+                    options: [
+                        "A promise to negotiate terms.",
+                        "A declaration of intent to agree to all terms of the offer.",
+                        "A refusal of the offer.",
+                        "An expression of dissatisfaction with the offer."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "According to the Egyptian civil code, when must the acceptance be expressed?",
+                    type: "multiple",
+                    options: [
+                        "At any time after the offer.",
+                        "During the period when the offer still exists.",
+                        "Only when both parties are present.",
+                        "After the contract meeting ends."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is true regarding silence in contracts?",
+                    type: "multiple",
+                    options: [
+                        "Silence always constitutes acceptance.",
+                        "Silence never indicates acceptance.",
+                        "Silence can be considered acceptance in certain circumstances.",
+                        "Silence invalidates the offer."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "In contracts between two parties present at one meeting, the moment of acceptance is the same as the moment of……",
+                    type: "multiple",
+                    options: [
+                        "negotiation",
+                        "conclusion of the contract", 
+                        "offer",
+                        "silence"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Silence does not constitute acceptance, except in circumstances where......indicates assent.",
+                    type: "multiple",
+                    options: [
+                        "previous dealings.",
+                        "commercial custom.",
+                        "voluntary performance of the offer.",
+                        "all of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The moment of acceptance in contracts between absentees occurs when the......of acceptance is made to the offeror.",
+                    type: "multiple",
+                    options: [
+                        "declaration.",
+                        "knowledge.",
+                        "dispatch.",
+                        "receipt."
+                    ],
+                    correctAnswer: 1
+                },
+                // The subject and cause MCQ
+                {
+                    text: "Which of the following objects is outside the circle of dealing by law?",
+                    type: "multiple",
+                    options: [
+                        "Real estate.",
+                        "Public assets.",
+                        "Money.",
+                        "Personal belongings."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If a contract is made without a lawful cause, what happens:",
+                    type: "multiple",
+                    options: [
+                        "The contract is valid.",
+                        "The contract is void.",
+                        "The contract is voidable.",
+                        "The contract is valid with special conditions."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is required for the object of a contract to be valid?",
+                    type: "multiple",
+                    options: [
+                        "It must be possible to exist.",
+                        "It must be impossible.",
+                        "It must be undefined.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 0
+                }
+            ];
+
+            // Civil Law - Exam 3: 20 T/F + 12 MCQ  
+            examData.civil.quiz3.questions = [
+                // 20 سؤال True/False
+                // The subject and cause (الباقي - 2 أسئلة)
+                {
+                    text: "A contract is valid if its cause is contrary to public policy or morality.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The object of the contract must be determined or determinable, or the contract will be void.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                // Nullification of contract (8 أسئلة)
+                {
+                    text: "The absence of one of the pillars of the contract (consent, object, cause) results in absolute nullity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Relative nullity occurs when there is an absence of one of the pillars of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "In the case of absolute nullity, the contract is void and has no effect.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "When part of a contract is void or voidable, that part alone will be annulled, unless it is established that the contract would not have been entered into without such a part.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A voidable contract has no effects before a judgment of nullity is issued.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The right to invoke relative nullity is granted to any person interested in the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Relative nullity can be ordered by the court on its own initiative.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Nullity can disappear by the ratification of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                // Liability for Personal Acts (10 أسئلة)
+                {
+                    text: "Every fault which causes injury to another person imposes an obligation to make reparation upon the person who committed it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The fault is based only on material factors, ignoring mental discretion.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The fault is defined as a deviation from the normal behavior of an average person.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Legitimate defense allows a person to cause injury to another without being responsible, as long as they do not exceed the necessary measure of defense.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Moral damage relates to harm done to a person's feelings or reputation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Material damage is the loss of property or financial rights.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The loss of opportunity cannot be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A person is not liable for damages if the cause of the injury is beyond their control, such as force majeure.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Contingent damage can be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The future damage can be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                
+                // 12 سؤال MCQ
+                // The subject and cause MCQ
+                {
+                    text: "Which of the following, if met, would make the contract void?",
+                    type: "multiple",
+                    options: [
+                        "It must be existed or can be existed.",
+                        "It must be determined or determinable.",
+                        "It must be undealable (outside the circle of dealing).",
+                        "All of the above."
+                    ],
+                    correctAnswer: 2
+                },
+                // Nullification MCQ
+                {
+                    text: "What is the result of absolute nullity?",
+                    type: "multiple",
+                    options: [
+                        "The contract is voidable but still valid.",
+                        "The contract is void and has no effect.",
+                        "The contract can be ratified after a certain period.",
+                        "The contract is voidable by the interested party."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following can render a contract voidable?",
+                    type: "multiple",
+                    options: [
+                        "Lack of object.",
+                        "Absence of consent.",
+                        "Mistake, fraud, or duress.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following situations can result in absolute nullity?",
+                    type: "multiple",
+                    options: [
+                        "Lack of object.",
+                        "Absence of consent.",
+                        "Unlawful cause.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Nullity lawsuits are prescribed after from the date of conclusion of the contract after:",
+                    type: "multiple",
+                    options: [
+                        "3 years.",
+                        "15 years.",
+                        "2 years.",
+                        "One year."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Who has the right to invoke the relative nullity of a contract?",
+                    type: "multiple",
+                    options: [
+                        "A minor or a person with reduced capacity.",
+                        "Every person having an interest in the contract.",
+                        "Only the party who is entitled to the contract's benefits.",
+                        "Anyone who witnessed the contract."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The prescription of relative nullity lawsuit is from the date of discovering the vice or incapacity after:",
+                    type: "multiple",
+                    options: [
+                        "15 years.",
+                        "3 years.",
+                        "2 years.",
+                        "One year"
+                    ],
+                    correctAnswer: 1
+                },
+                // Liability MCQ
+                {
+                    text: "What does the liability for personal acts generally require?",
+                    type: "multiple",
+                    options: [
+                        "A person's fault.",
+                        "Causality between fault and damage.",
+                        "Causing harm to others.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "What condition must be met for future damage to be compensable?",
+                    type: "multiple",
+                    options: [
+                        "It must be a contingent damage.",
+                        "It must be an inevitable future loss.",
+                        "It must be indirect.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Under the concept of causality, liability arises if......",
+                    type: "multiple",
+                    options: [
+                        "The damage was caused by an unforeseeable event.",
+                        "The cause is indirect.",
+                        "the damage is caused by the fault.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following does NOT represent a situation in which liability might be excluded?",
+                    type: "multiple",
+                    options: [
+                        "Legitimate defense.",
+                        "Executing an order from a superior.",
+                        "A state of necessity.",
+                        "Negligence."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is needed to prove fault in a personal injury case?",
+                    type: "multiple",
+                    options: [
+                        "Proving the deviation from the average person's behavior",
+                        "Proving the damage was caused intentionally.",
+                        "Proving the damage was only financial.",
+                        "None of the above."
+                    ],
+                    correctAnswer: 0
+                }
+            ];
+        }
+
+        // Initialize application
+        loadAllQuestions();
+
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+
+            if (username.length < 4) {
+                loginError.style.display = 'block';
+                return;
+            }
+
+            currentUser = { username: username };
+            loginError.style.display = 'none';
+            loginScreen.classList.remove('active');
+            subjectScreen.classList.add('active');
+            userNameSubject.textContent = currentUser.username;
+
+            initializeSubjectSelector(subjectSelector);
+        }
+
+        function initializeSubjectSelector(selectorElement) {
+            selectorElement.querySelectorAll('.subject-btn').forEach(btn => {
+                // Use bindFastClick for reliable touch support on iOS Safari
+                bindFastClick(btn, function () {
+                    selectorElement.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSubject = btn.dataset.subject;
+                });
+            });
+        }
+
+        function selectSubject() {
+            subjectScreen.classList.remove('active');
+            welcomeScreen.classList.add('active');
+            userNameWelcome.textContent = currentUser.username;
+            
+            // Update subject text
+            const subjectNames = {
+                humanitarian: "International Humanitarian Law",
+                general: "Public International Law",
+                strategic: "Strategic Planning",
+                civil: "Civil Law"
+            };
+            selectedSubjectText.textContent = `Select exam for ${subjectNames[currentSubject]}`;
+            
+            // Initialize exam selection
+            initializeExamSelection();
+        }
+
+        function initializeExamSelection() {
+            const exams = examData[currentSubject];
+            welcomeQuizSelector.innerHTML = '';
+            
+            Object.keys(exams).forEach((examKey, index) => {
+                const exam = exams[examKey];
+                const examBtn = document.createElement('div');
+                examBtn.className = `quiz-btn ${index === 0 ? 'active' : ''}`;
+                examBtn.dataset.quiz = examKey;
+                
+                // عرض رقم الامتحان فقط
+                const examNumber = examKey.replace('quiz', '');
+                examBtn.innerHTML = `
+                    <div class="quiz-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>Exam ${examNumber}</div>
+                `;
+                
+                // Use bindFastClick for better touch response across devices
+                bindFastClick(examBtn, function () {
+                    welcomeQuizSelector.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('active'));
+                    examBtn.classList.add('active');
+                    currentQuiz = examBtn.dataset.quiz;
+                });
+                
+                welcomeQuizSelector.appendChild(examBtn);
+            });
+        }
+
+        function backToSubject() {
+            welcomeScreen.classList.remove('active');
+            subjectScreen.classList.add('active');
+        }
+
+        function startQuiz() {
+            userName = currentUser.username;
+
+            welcomeScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            userNameSpan.textContent = userName;
+
+            timerContainer.style.display = 'block';
+            timeUp = false;
+
+            shuffleQuestions();
+
+            const questions = getCurrentQuestions();
+            // 2 دقائق لكل سؤال (120 ثانية)
+            totalTimeLeft = questions.length * 120;
+
+            startTotalTimer();
+            loadQuestion();
+        }
+
+        function getCurrentQuestions() {
+            const exams = examData[currentSubject];
+            return shuffledQuestions[currentQuiz] || exams[currentQuiz].questions;
+        }
+
+        function getCurrentExam() {
+            const exams = examData[currentSubject];
+            return exams[currentQuiz];
+        }
+
+        function shuffleQuestions() {
+            const exams = examData[currentSubject];
+            const originalQuestions = exams[currentQuiz].questions;
+            shuffledQuestions[currentQuiz] = [...originalQuestions];
+
+            // Shuffle questions
+            for (let i = shuffledQuestions[currentQuiz].length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledQuestions[currentQuiz][i], shuffledQuestions[currentQuiz][j]] =
+                    [shuffledQuestions[currentQuiz][j], shuffledQuestions[currentQuiz][i]];
+            }
+
+            // Shuffle options within each question
+            shuffledQuestions[currentQuiz].forEach(question => {
+                if (question.type === "multiple") {
+                    const originalOptions = [...question.options];
+                    const originalCorrectAnswer = question.correctAnswer;
+                    const correctAnswerText = originalOptions[originalCorrectAnswer];
+
+                    for (let i = originalOptions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [originalOptions[i], originalOptions[j]] = [originalOptions[j], originalOptions[i]];
+                    }
+
+                    question.correctAnswer = originalOptions.indexOf(correctAnswerText);
+                    question.options = originalOptions;
+                }
+            });
+
+            currentQuestionIndex = 0;
+            userAnswers = {};
+        }
+
+        function startTotalTimer() {
+            updateTotalTimerDisplay();
+
+            clearInterval(timer);
+            timer = setInterval(function () {
+                if (timeUp) {
+                    clearInterval(timer);
+                    return;
+                }
+                
+                totalTimeLeft--;
+                updateTotalTimerDisplay();
+
+                if (totalTimeLeft <= 0) {
+                    clearInterval(timer);
+                    timeUp = true;
+                    showTimeUpMessage();
+                    setTimeout(() => {
+                        calculateResults();
+                        showResults();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function updateTotalTimerDisplay() {
+            const minutes = Math.floor(totalTimeLeft / 60);
+            const seconds = totalTimeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (totalTimeLeft <= 60) {
+                timerDisplay.style.color = '#B22222';
+                timerContainer.classList.add('timer-warning');
+            } else if (totalTimeLeft <= 300) {
+                timerDisplay.style.color = '#f39c12';
+                timerContainer.classList.remove('timer-warning');
+            } else {
+                timerDisplay.style.color = '#D4AF37';
+                timerContainer.classList.remove('timer-warning');
+            }
+        }
+
+        function showTimeUpMessage() {
+            const timeUpDiv = document.createElement('div');
+            timeUpDiv.className = 'time-up-message';
+            timeUpDiv.innerHTML = `
+                <h2><i class="fas fa-hourglass-end"></i> Time's Up!</h2>
+                <p>The exam has been automatically submitted.</p>
+                <p>Your answers are being evaluated...</p>
+            `;
+            document.body.appendChild(timeUpDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(timeUpDiv);
+            }, 3000);
+        }
+
+        function loadQuestion() {
+            if (timeUp) return;
+            
+            const exam = getCurrentExam();
+            const questions = getCurrentQuestions();
+            const question = questions[currentQuestionIndex];
+
+            quizTitle.textContent = exam.title;
+            questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            questionText.textContent = question.text;
+
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (userAnswers[currentQuestionIndex] === index) {
+                    optionElement.classList.add('selected');
+                }
+
+                optionElement.innerHTML = option;
+                // Use pointer events and touchstart fallback for faster touch response and avoid double-firing on iOS
+                optionElement.addEventListener('pointerdown', (e) => {
+                    if (e.pointerType === 'touch') {
+                        optionElement.dataset.touched = '1';
+                        selectOption(index);
+                    }
+                });
+                optionElement.addEventListener('touchstart', (e) => {
+                    // Older iOS Safari may not support pointer events
+                    optionElement.dataset.touched = '1';
+                    selectOption(index);
+                }, {passive: true});
+                optionElement.addEventListener('click', () => {
+                    if (optionElement.dataset.touched) {
+                        delete optionElement.dataset.touched;
+                        return;
+                    }
+                    selectOption(index);
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'Finish Exam' : 'Next';
+
+            resultsSummary.style.display = 'none';
+        }
+
+        function selectOption(index) {
+            if (timeUp) return;
+            
+            userAnswers[currentQuestionIndex] = index;
+            loadQuestion();
+        }
+
+        function goToPreviousQuestion() {
+            if (timeUp) return;
+            
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function goToNextQuestion() {
+            if (timeUp) return;
+            
+            const questions = getCurrentQuestions();
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                clearInterval(timer);
+                calculateResults();
+                showResults();
+            }
+        }
+
+        function calculateResults() {
+            const questions = getCurrentQuestions();
+            let correctCount = 0;
+
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            quizResults[currentQuiz] = {
+                correct: correctCount,
+                total: questions.length,
+                percentage: Math.round((correctCount / questions.length) * 100)
+            };
+        }
+
+        function showResults() {
+            const results = quizResults[currentQuiz];
+            const questions = getCurrentQuestions();
+
+            scoreDisplay.textContent = `${results.percentage}%`;
+            scoreText.textContent = `You answered ${results.correct} out of ${results.total} questions correctly`;
+            correctAnswers.textContent = `Correct Answers: ${results.correct}`;
+            incorrectAnswers.textContent = `Incorrect Answers: ${results.total - results.correct}`;
+
+            reviewContainer.innerHTML = '<h3>Question Review</h3>';
+
+            questions.forEach((question, index) => {
+                const isCorrect = userAnswers[index] === question.correctAnswer;
+
+                if (!isCorrect) {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = `review-item incorrect`;
+
+                    const userAnswerIndex = userAnswers[index];
+                    const correctAnswerIndex = question.correctAnswer;
+
+                    reviewItem.innerHTML = `
+                        <div class="review-question">${question.text}</div>
+                        <div class="review-answer">Your answer: <span class="user-answer">${userAnswerIndex !== undefined ? question.options[userAnswerIndex] : 'Not answered'}</span></div>
+                        <div class="review-answer">Correct answer: <span class="correct-answer">${question.options[correctAnswerIndex]}</span></div>
+                    `;
+
+                    reviewContainer.appendChild(reviewItem);
+                }
+            });
+
+            timerContainer.style.display = 'none';
+            resultsSummary.style.display = 'block';
+
+            let message = "";
+            if (results.percentage >= 90) {
+                message = "Excellent! Outstanding performance.";
+            } else if (results.percentage >= 70) {
+                message = "Very good! Great performance.";
+            } else if (results.percentage >= 50) {
+                message = "Acceptable! You can improve.";
+            } else {
+                message = "Needs improvement. Try again.";
+            }
+
+            setTimeout(() => {
+                alert(`Congratulations ${userName}! ${message}\n\nYour score: ${results.percentage}%`);
+            }, 500);
+        }
+
+        function backToQuizzes() {
+            quizScreen.classList.remove('active');
+            welcomeScreen.classList.add('active');
+        }
+
+        // Add Enter key support for login (works on mobile Safari)
+        usernameInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                handleLogin();
+            }
+        });
+
+        // Initialize application on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Add visual effects
+            const loginIcon = document.querySelector('.login-icon i');
+            if (loginIcon) {
+                setInterval(() => {
+                    loginIcon.style.transform = 'rotate(5deg)';
+                    setTimeout(() => {
+                        loginIcon.style.transform = 'rotate(-5deg)';
+                    }, 500);
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+
+</html>
