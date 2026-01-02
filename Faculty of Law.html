@@ -643,12 +643,6 @@
                         </div>
                         <div>Public International Law</div>
                     </div>
-                    <div class="subject-btn" data-subject="strategic">
-                        <div class="subject-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div>Strategic Planning</div>
-                    </div>
                     <div class="subject-btn" data-subject="civil">
                         <div class="subject-icon">
                             <i class="fas fa-balance-scale"></i>
@@ -786,7 +780,8 @@
     </div>
 
     <!-- الصوت الإسلامي -->
-    <audio id="islamicAudio" preload="auto"> 
+    <audio id="islamicAudio" preload="auto">
+        <source src="https://everyayah.com/data/Abdul_Basit_Murattal_64kbps/001001.mp3" type="audio/mpeg">
         <source src="https://www.islamicfinder.org/audio/bismillah.ogg" type="audio/ogg">
     </audio>
 
@@ -804,16 +799,6 @@
                 }
             },
             general: {
-                quiz1: {
-                    title: "Exam 1",
-                    questions: []
-                },
-                quiz2: {
-                    title: "Exam 2",
-                    questions: []
-                }
-            },
-            strategic: {
                 quiz1: {
                     title: "Exam 1",
                     questions: []
@@ -1218,8 +1203,9 @@
             });
 
             // ========== Public International Law ==========
-            // Exam 1 (30 أسئلة)
+            // Exam 1 (15 أسئلة اختيار من متعدد + 15 صح/خطأ)
             examData.general.quiz1.questions = [
+                // MCQs 1-15
                 {
                     text: "What is the legal effect of a Circumstance Precluding Wrongfulness (CPW)?",
                     type: "multiple",
@@ -1277,6 +1263,23 @@
                     correctAnswer: 1
                 },
                 {
+                    text: "The three forms of reparation—Restitution, Compensation, and Satisfaction—are aimed at achieving the goal of:",
+                    type: "multiple",
+                    options: [
+                        "Punitive damages.",
+                        "Restitutio in integrum.",
+                        "Collective security.",
+                        "Jus cogens enforcement."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is not a recognized circumstance precluding wrongfulness in ARSIWA?",
+                    type: "multiple",
+                    options: ["Countermeasures", "Consent", "Self-Defence", "Necessity"],
+                    correctAnswer: 0
+                },
+                {
                     text: "Which VCLT article enshrines the principle Pacta Sunt Servanda?",
                     type: "multiple",
                     options: ["Article 19", "Article 26", "Article 53", "Article 62"],
@@ -1289,73 +1292,61 @@
                     correctAnswer: 2
                 },
                 {
-                    text: "Which body is established by the UN Charter as the principal judicial organ of the United Nations?",
+                    text: "According to the VCLT, which ground leads to Absolute Invalidity (Void)?",
                     type: "multiple",
                     options: [
-                        "The Permanent Court of Arbitration (PCA).",
-                        "The International Criminal Court (ICC).",
-                        "The UN Security Council.",
-                        "The International Court of Justice (ICJ)."
+                        "Error (Art. 48)",
+                        "Fraud (Art. 49)",
+                        "Coercion of a State (Art. 52)",
+                        "Internal Law Violation (Art. 46)"
                     ],
-                    correctAnswer: 3
+                    correctAnswer: 2
                 },
                 {
-                    text: "Which diplomatic method involves a third party actively proposing terms of settlement to the disputing parties?",
+                    text: "If an objecting State declares that it does not consider the treaty in force with the reserving State, this is known as a:",
                     type: "multiple",
-                    options: ["Good Offices", "Mediation", "Inquiry", "Negotiation"],
+                    options: [
+                        "Simple Objection",
+                        "Qualified Objection",
+                        "Peremptory Objection",
+                        "Interpretive Declaration"
+                    ],
                     correctAnswer: 1
                 },
                 {
-                    text: "The ICJ's jurisdiction ratione personae (over the parties) in contentious cases is limited to:",
+                    text: "What is the purpose of supplementary means of interpretation (Art. 32)?",
                     type: "multiple",
                     options: [
-                        "UN Member States and International Organizations.",
-                        "All States and Individuals.",
-                        "States only.",
-                        "International Organizations only."
+                        "To override the general rule of interpretation.",
+                        "To replace the object and purpose of the treaty.",
+                        "To confirm the meaning when the general rule is ambiguous or absurd.",
+                        "To change the text of the treaty after entry into force."
                     ],
                     correctAnswer: 2
                 },
                 {
-                    text: "A State makes a prior, general declaration accepting the compulsory jurisdiction of the ICJ concerning any other State accepting the same obligation. This is a reference to the:",
+                    text: "A treaty that conflicts with a Jus Cogens norm is:",
                     type: "multiple",
                     options: [
-                        "Jurisdictional Clause.",
-                        "Special Agreement.",
-                        "Optional Clause (Art. 36(2)).",
-                        "Forum Prorogatum."
+                        "Valid but suspended.",
+                        "Subject to Relative Invalidity.",
+                        "Absolutely Void from the outset.",
+                        "Subject to acceptance by the UN Security Council."
                     ],
                     correctAnswer: 2
                 },
                 {
-                    text: "The principle codified in Article 2(4) is widely regarded as possessing the status of:",
+                    text: "Which ICJ case established the 'object and purpose' test for the permissibility of reservations?",
                     type: "multiple",
                     options: [
-                        "Pacta Sunt Servanda.",
-                        "Erga Omnes obligation",
-                        "Customary Law.",
-                        "Both B and C, and possibly Jus Cogens."
-                    ],
-                    correctAnswer: 3
-                },
-                {
-                    text: "Which UN Charter Chapter addresses the Security Council's powers to take measures with respect to threats to the peace?",
-                    type: "multiple",
-                    options: ["Chapter VI", "Chapter VII", "Chapter VIII", "Chapter IX"],
-                    correctAnswer: 1
-                },
-                {
-                    text: "For an act of self-defence to be lawful, the initial use of force must be in response to:",
-                    type: "multiple",
-                    options: [
-                        "A diplomatic disagreement.",
-                        "An economic blockade.",
-                        "An armed attack that has occurred.",
-                        "A hostile political statement."
+                        "Gabèíkovo-Nagymaros Project (1997)",
+                        "Pulau Ligitan and Pulau Sipadan (2002)",
+                        "Reservations to the Convention on the Prevention and Punishment of the Crime of Genocide (1951)",
+                        "Nuclear Tests Case (1974)"
                     ],
                     correctAnswer: 2
                 },
-                // True/False Questions
+                // True/False Questions 1-15
                 {
                     text: "Enforcement Jurisdiction is generally broad, allowing a State to send police officers into another State to arrest suspects without prior consent.",
                     type: "truefalse",
@@ -1448,791 +1439,241 @@
                 }
             ];
 
-            // Exam 2
-            examData.general.quiz2.questions = examData.general.quiz1.questions.map((q, i) => {
-                const newQ = {...q};
-                newQ.text = `(Exam 2) ${q.text}`;
-                return newQ;
-            });
-
-            // ========== Strategic Planning ==========
-            // Exam 1 (48 أسئلة)
-            const strategicQuestions = [
+            // Exam 2 (15 أسئلة اختيار من متعدد + 15 صح/خطأ)
+            examData.general.quiz2.questions = [
+                // MCQs 16-30
                 {
-                    text: "What is human capital, as defined in the text?",
+                    text: "According to VCLT, the material breach of a treaty allows the other parties to invoke it as a ground for:",
                     type: "multiple",
                     options: [
-                        "Financial resources of a company",
-                        "The network of relationships within an organization",
-                        "The individual capabilities, knowledge, skills, and experience of a company's employees and managers",
-                        "A company's physical assets"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "Social capital is defined as:",
-                    type: "multiple",
-                    options: [
-                        "The financial resources of a company",
-                        "The individual capabilities of employees",
-                        "The network of relationships that individuals have throughout the organization",
-                        "A company's technological resources"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "Explicit knowledge is:",
-                    type: "multiple",
-                    options: [
-                        "Knowledge in the minds of employees",
-                        "Knowledge shared only with consent",
-                        "Knowledge that is easily documented and stored",
-                        "Knowledge gained through social interactions"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "Tacit knowledge is:",
-                    type: "multiple",
-                    options: [
-                        "Easily documented knowledge",
-                        "Knowledge in the minds of employees",
-                        "Knowledge stored in databases",
-                        "Knowledge that can be easily replicated"
+                        "Absolute Invalidity",
+                        "Suspension or Termination",
+                        "Simple Objection",
+                        "Only interpretation"
                     ],
                     correctAnswer: 1
                 },
                 {
-                    text: "According to the text, what is crucial for creating new knowledge?",
+                    text: "Which body is established by the UN Charter as the principal judicial organ of the United Nations?",
                     type: "multiple",
                     options: [
-                        "Separation of explicit and tacit knowledge",
-                        "Continual interaction of explicit and tacit knowledge",
-                        "Focusing only on explicit knowledge",
-                        "Ignoring tacit knowledge"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which of the following is NOT one of the key processes in managing human capital, according to the text?",
-                    type: "multiple",
-                    options: ["Hiring/selection", "Development", "Retention", "Liquidation"],
-                    correctAnswer: 3
-                },
-                {
-                    text: "What does the text suggest is a traditional approach to employee selection that is being questioned?",
-                    type: "multiple",
-                    options: [
-                        "Hiring for attitude",
-                        "Training for skill",
-                        "'Lock and key' approach",
-                        "Using algorithms"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is a key characteristic of labor flexibility in the United States?",
-                    type: "multiple",
-                    options: [
-                        "Lifetime tenure at companies",
-                        "High payroll taxes",
-                        "Freedom to hire and fire",
-                        "Strict labor contracts"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is one of the benefits of hiring 'boomerang employees'?",
-                    type: "multiple",
-                    options: [
-                        "Increased need for socialization and training",
-                        "Lower chances of making a 'poor hire'",
-                        "Higher salary expectations",
-                        "Less familiarity with the company"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a potential drawback of using algorithms for selection?",
-                    type: "multiple",
-                    options: [
-                        "They always reduce bias",
-                        "They can potentially increase bias",
-                        "They are always accurate",
-                        "They decrease efficiency"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a 360-degree evaluation system?",
-                    type: "multiple",
-                    options: [
-                        "An evaluation from a single perspective",
-                        "An evaluation that only considers financial performance",
-                        "An evaluation approach that includes multiple perspectives",
-                        "An annual review"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is identified as a key factor in employee satisfaction according to Glassdoor?",
-                    type: "multiple",
-                    options: [
-                        "High salaries only",
-                        "Career opportunities",
-                        "Company size",
-                        "Location of the company"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What does social network analysis depict?",
-                    type: "multiple",
-                    options: [
-                        "A company's financial performance",
-                        "The pattern of interactions among individuals",
-                        "The level of employee satisfaction",
-                        "The efficiency of production processes"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a bridging relationship in social network analysis?",
-                    type: "multiple",
-                    options: [
-                        "Relationships among members within a closed group",
-                        "Ties connecting heterogeneous people",
-                        "Relationships that lead to groupthink",
-                        "Relationships that only involve communication flow"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a potential downside of social capital?",
-                    type: "multiple",
-                    options: [
-                        "Increased innovation",
-                        "Always leads to better decision-making",
-                        "Can lead to 'groupthink' and suboptimal ideas",
-                        "Reduces the cost of socialization"
-                    ],
-                    correctAnswer: 2
-                },
-                // Chapter 5 Questions
-                {
-                    text: "Which of the following does best suit overall cost leadership strategy?",
-                    type: "multiple",
-                    options: [
-                        "Low-cost position, narrow target market",
-                        "Superior perceived value, broad target market",
-                        "Low-cost position, broad target market",
-                        "Superior perceived value, narrow target market"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "Which of the following does best suit differentiation focus strategy?",
-                    type: "multiple",
-                    options: [
-                        "Low-cost position, narrow target market",
-                        "Superior perceived value, broad target market",
-                        "Low-cost position, broad target market",
-                        "Superior perceived value, narrow target market"
+                        "The Permanent Court of Arbitration (PCA).",
+                        "The International Criminal Court (ICC).",
+                        "The UN Security Council.",
+                        "The International Court of Justice (ICJ)."
                     ],
                     correctAnswer: 3
                 },
                 {
-                    text: "Which of the following is not true regarding overall low-cost leadership strategy?",
+                    text: "Which diplomatic method involves a third party actively proposing terms of settlement to the disputing parties?",
+                    type: "multiple",
+                    options: ["Good Offices", "Mediation", "Inquiry", "Negotiation"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Consent to the jurisdiction of an ad hoc arbitral tribunal is typically established through a specific agreement known as a:",
+                    type: "multiple",
+                    options: ["Compromis", "Optional Clause", "Jurisdictional Clause", "Pacta Sunt Servanda"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The ICJ's jurisdiction ratione personae (over the parties) in contentious cases is limited to:",
                     type: "multiple",
                     options: [
-                        "It involves aggressive construction of efficient scale facilities.",
-                        "It provides substantial entry barriers due to economies of scale",
-                        "It puts the firm in a favorable position with respect to substitute products",
-                        "It makes the firm easily susceptible to rivalry from competitors."
+                        "UN Member States and International Organizations.",
+                        "All States and Individuals.",
+                        "States only.",
+                        "International Organizations only."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A State makes a prior, general declaration accepting the compulsory jurisdiction of the ICJ concerning any other State accepting the same obligation. This is a reference to the:",
+                    type: "multiple",
+                    options: [
+                        "Jurisdictional Clause",
+                        "Special Agreement",
+                        "Optional Clause (Art. 36(2))",
+                        "Forum Prorogatum"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The method that establishes an impartial fact-finding commission solely to clarify disputed questions of fact is called:",
+                    type: "multiple",
+                    options: ["Conciliation", "Mediation", "Inquiry", "Negotiation"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The final, binding decision issued by an international arbitral tribunal is legally referred to as a:",
+                    type: "multiple",
+                    options: ["Judgment", "Verdict", "Award", "Finding"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle codified in Article 2(4) is widely regarded as possessing the status of:",
+                    type: "multiple",
+                    options: [
+                        "Pacta Sunt Servanda",
+                        "Erga Omnes obligation",
+                        "Customary Law",
+                        "Both B and C, and possibly Jus Cogens"
                     ],
                     correctAnswer: 3
                 },
                 {
-                    text: "Which of the following is true about differentiation strategy?",
+                    text: "Which UN Charter Chapter addresses the Security Council's powers to take measures with respect to threats to the peace?",
+                    type: "multiple",
+                    options: ["Chapter VI", "Chapter VII", "Chapter VIII", "Chapter IX"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "For an act of self-defence to be lawful, the initial use of force must be in response to:",
                     type: "multiple",
                     options: [
-                        "It requires superior material handling operations to minimize damage",
-                        "It requires non-responsive order processing",
-                        "It allows high defect rates in the quality",
-                        "It needs neglection of key customers"
+                        "A diplomatic disagreement",
+                        "An economic blockade",
+                        "An armed attack that has occurred",
+                        "A hostile political statement"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The Security Council's initial step in responding to a crisis under Chapter VII is to:",
+                    type: "multiple",
+                    options: [
+                        "Determine the existence of a threat to the peace (Art. 39)",
+                        "Impose economic sanctions (Art. 41)",
+                        "Immediately authorize the use of force (Art. 42)",
+                        "Request an advisory opinion from the ICJ"
                     ],
                     correctAnswer: 0
                 },
                 {
-                    text: "When differentiation is easily imitated, it is considered ______ of differentiation strategy.",
-                    type: "multiple",
-                    options: ["an advantage", "a pitfall", "a requirement", "an option"],
-                    correctAnswer: 1
-                },
-                {
-                    text: "A(an) ______ strategy is chosen when the firm selects a segment or group of segments (or niche) and tailors its strategy to serve them.",
+                    text: "Which two requirements for lawful self-defence were emphasized by the ICJ in the Nicaragua case?",
                     type: "multiple",
                     options: [
-                        "overall cost leadership",
-                        "overall differentiation",
-                        "focus",
-                        "an option"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "A(an) ______ strategy establishes customer loyalty and hence less threat from substitutes.",
-                    type: "multiple",
-                    options: [
-                        "overall cost leadership",
-                        "overall differentiation",
-                        "focus differentiation",
-                        "an no answer is correct"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "A(an) ______ provides substantial entry barriers due to economies of scale and cost advantages.",
-                    type: "multiple",
-                    options: [
-                        "overall cost leadership",
-                        "overall differentiation",
-                        "focus differentiation",
-                        "an no answer is correct"
-                    ],
-                    correctAnswer: 0
-                },
-                {
-                    text: "Which of the following is one of Porter's three generic strategies?",
-                    type: "multiple",
-                    options: [
-                        "Market dominance",
-                        "Overall cost leadership",
-                        "Product diversification",
-                        "Vertical integration"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What does overall cost leadership emphasize?",
-                    type: "multiple",
-                    options: [
-                        "Unique product features",
-                        "Creating a low-cost position relative to a firm's peers",
-                        "Extensive advertising",
-                        "High customer service"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Differentiation implies:",
-                    type: "multiple",
-                    options: [
-                        "Lowest possible prices",
-                        "Products and/or services that are unique and valued",
-                        "Standardized products",
-                        "Minimal customer service"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "A focus strategy requires:",
-                    type: "multiple",
-                    options: [
-                        "Broad product lines",
-                        "Serving the entire market",
-                        "Narrow product lines or targeted geographic markets",
-                        "High prices"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "Which of the following is a pitfall of cost leadership?",
-                    type: "multiple",
-                    options: [
-                        "High customer loyalty",
-                        "Substantial entry barriers",
-                        "Strategy can be too easily imitated",
-                        "Favorable position with respect to substitute products"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "In which stage of the industry life cycle are products unfamiliar to consumers?",
-                    type: "multiple",
-                    options: ["Growth", "Maturity", "Introduction", "Decline"],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What happens to market growth rate during the maturity stage?",
-                    type: "multiple",
-                    options: [
-                        "It is very high",
-                        "It is low to moderate",
-                        "It is negative",
-                        "It increases rapidly"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which generic strategy is typically emphasized in the introduction stage?",
-                    type: "multiple",
-                    options: [
-                        "Overall cost leadership",
-                        "Differentiation",
-                        "Focus",
-                        "Cost focus"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a characteristic of the growth stage?",
-                    type: "multiple",
-                    options: [
-                        "Limited competition",
-                        "Strong increases in sales",
-                        "Market saturation",
-                        "Industry consolidation"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "In the maturity stage, there is an increased emphasis on:",
-                    type: "multiple",
-                    options: ["Product design", "Efficiency", "Market awareness", "Sales and marketing"],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a retrenchment strategy?",
-                    type: "multiple",
-                    options: [
-                        "Aggressively expanding into new markets",
-                        "Electively cutting unprofitable market segments and asset investments",
-                        "Increasing product diversification",
-                        "Ignoring changes in the industry"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which of the following is a form of differentiation?",
-                    type: "multiple",
-                    options: [
-                        "Low cost",
-                        "Prestige or brand image",
-                        "Efficient scale facilities",
-                        "Tight cost control"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What can an overall differentiation strategy create?",
-                    type: "multiple",
-                    options: [
-                        "Lower entry barriers",
-                        "Higher threat from substitutes",
-                        "Higher entry barriers due to customer loyalty",
-                        "Price competition"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "A focus strategy involves:",
-                    type: "multiple",
-                    options: [
-                        "Serving the entire industry",
-                        "A narrow competitive scope within an industry",
-                        "Ignoring customer needs",
-                        "High product differentiation across the board"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What are the two variants of a focus strategy?",
-                    type: "multiple",
-                    options: [
-                        "Cost leadership and differentiation",
-                        "Market focus and product focus",
-                        "Cost focus and differentiation focus",
-                        "Innovation focus and technology focus"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is the goal of a combination strategy?",
-                    type: "multiple",
-                    options: [
-                        "To offer the highest prices",
-                        "To provide unique value in an efficient manner",
-                        "To avoid competition",
-                        "To focus on a single market segment"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which of the following is NOT a stage in the industry life cycle?",
-                    type: "multiple",
-                    options: [
-                        "Introduction",
-                        "Growth",
-                        "Recession",
-                        "Decline"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "During which stage of the industry life cycle is there a high emphasis on research and development?",
-                    type: "multiple",
-                    options: [
-                        "Introduction",
-                        "Growth",
-                        "Maturity",
-                        "Decline"
-                    ],
-                    correctAnswer: 0
-                },
-                {
-                    text: "In the decline stage, what happens to price competition?",
-                    type: "multiple",
-                    options: [
-                        "It decreases",
-                        "It increases",
-                        "It remains the same",
-                        "It becomes irrelevant"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which strategy involves exiting the market?",
-                    type: "multiple",
-                    options: [
-                        "Maintaining",
-                        "Harvesting",
-                        "Consolidating",
-                        "Decline"
+                        "Effectiveness and Timeliness",
+                        "Retaliation and Compensation",
+                        "Severity and Public Notification",
+                        "Necessity and Proportionality"
                     ],
                     correctAnswer: 3
                 },
                 {
-                    text: "Which of the following is a risk of differentiation?",
+                    text: "The use of force by a State to prevent potential genocide without prior Security Council authorization is associated with the controversial doctrine of:",
                     type: "multiple",
                     options: [
-                        "Low prices",
-                        "Too high a price premium",
-                        "Low customer loyalty",
-                        "Easy cost imitation"
+                        "Pre-emptive Self-Defence",
+                        "Humanitarian Intervention/R2P",
+                        "Good Offices",
+                        "Force Majeure"
                     ],
                     correctAnswer: 1
                 },
                 {
-                    text: "What does cost focus create?",
+                    text: "Under ARSIWA principles, a lawful act of self-defence would be considered a:",
                     type: "multiple",
                     options: [
-                        "A differentiation advantage in its target segment",
-                        "A cost advantage in its target segment",
-                        "A broad market",
-                        "High product prices"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "Which of the following is part of cost leadership?",
-                    type: "multiple",
-                    options: [
-                        "Average overhead control",
-                        "Cost minimization in all activities",
-                        "Flexible scale facilities",
-                        "Average efficient facilities"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a disadvantage of differentiation?",
-                    type: "multiple",
-                    options: [
-                        "Low customer loyalty",
-                        "Customer willingness to pay a price premium",
-                        "Reduced rivalry",
-                        "The potential for imitation"
-                    ],
-                    correctAnswer: 3
-                },
-                {
-                    text: "In which stage of the industry life cycle do sales experience strong increases?",
-                    type: "multiple",
-                    options: [
-                        "Introduction",
-                        "Growth",
-                        "Maturity",
-                        "Decline"
-                    ],
-                    correctAnswer: 1
-                },
-                // Chapter 6 Questions
-                {
-                    text: "When diversification makes business 1 plus business 2 equals more than two. This is called:",
-                    type: "multiple",
-                    options: ["Strategy", "Synergy", "Symmetry", "Symbiosis"],
-                    correctAnswer: 1
-                },
-                {
-                    text: "______ involves a better understanding of the competitive position of an overall portfolio or family of businesses.",
-                    type: "multiple",
-                    options: [
-                        "Portfolio management",
-                        "Competitive advantage",
-                        "Human resources management",
-                        "Operational management"
+                        "Circumstance Precluding Wrongfulness",
+                        "Non-Forcible Measure",
+                        "Mandatory Consequence of Responsibility",
+                        "Jus Cogens Breach"
                     ],
                     correctAnswer: 0
                 },
+                // True/False Questions 16-30
                 {
-                    text: "Which of the following is true about BCG matrix?",
-                    type: "multiple",
-                    options: [
-                        "Each circle represents one of the firm's business units",
-                        "The size of the circle represents the relative size of the business unit in terms of costs",
-                        "It combines industry growth rate and relative logistics partnerships"
-                    ],
+                    text: "The VCLT allows a State to make any reservation, even if it is incompatible with the object and purpose of the treaty.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If a State makes a simple objection to a reservation, the treaty does not enter into force between the two States.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The general rule for treaty interpretation (VCLT, Art. 31) focuses on the 'ordinary meaning' of the terms.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 0
                 },
                 {
-                    text: "According to BCG matrix, 'Cash cow' businesses involve:",
-                    type: "multiple",
-                    options: [
-                        "High relative market share and high industry growth rate",
-                        "High relative market share and low industry growth rate",
-                        "Low relative market share and high industry growth rate",
-                        "Low relative market share and low industry growth rate"
-                    ],
+                    text: "Absolute Invalidity (Void) can be cured or waived if the parties agree later.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 1
                 },
                 {
-                    text: "According to BCG matrix, 'Question mark' businesses involve:",
-                    type: "multiple",
-                    options: [
-                        "High relative market share and high industry growth rate",
-                        "High relative market share and low industry growth rate",
-                        "Low relative market share and high industry growth rate",
-                        "Low relative market share and low industry growth rate"
-                    ],
-                    correctAnswer: 2
+                    text: "Relative Invalidity (Voidable) applies when a treaty conflicts with a Jus Cogens norm.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
                 },
                 {
-                    text: "According to BCG matrix, 'Star' businesses involve:",
-                    type: "multiple",
-                    options: [
-                        "High relative market share and high industry growth rate",
-                        "High relative market share and low industry growth rate",
-                        "Low relative market share and high industry growth rate",
-                        "Low relative market share and low industry growth rate"
-                    ],
+                    text: "The foundational rule prohibiting the use of force is enshrined in Article 2(4) of the UN Charter.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 0
                 },
                 {
-                    text: "According to BCG matrix, 'Dog' businesses involve:",
-                    type: "multiple",
-                    options: [
-                        "High relative market share and high industry growth rate",
-                        "High relative market share and low industry growth rate",
-                        "Low relative market share and high industry growth rate",
-                        "Low relative market share and low industry growth rate"
-                    ],
-                    correctAnswer: 3
-                },
-                {
-                    text: "______ involve one firm buying another either through stock purchase, cash, or the issuance of debt.",
-                    type: "multiple",
-                    options: ["Mergers", "Acquisitions", "Divestments", "Internal developments"],
+                    text: "The prohibition on the use of force is generally considered binding only as a treaty rule, not as customary international law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 1
                 },
                 {
-                    text: "______ involve a combination or consolidation of two firms to form a new legal entity.",
-                    type: "multiple",
-                    options: ["Mergers", "Acquisitions", "Divestments", "Internal developments"],
+                    text: "The UN Charter recognizes the right to individual or collective self defence as an inherent, pre-existing right.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 0
                 },
                 {
-                    text: "Divesting businesses can accomplish many different objectives, except:",
-                    type: "multiple",
-                    options: [
-                        "Enabling managers to focus their efforts more directly on the firm's core businesses",
-                        "Providing the firm with more resources to spend on more attractive alternatives.",
-                        "Decreasing cash to help fund existing businesses.",
-                        "Cutting the financial losses of a failed acquisition"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "According to the text, what is one way unrelated diversification helps a firm?",
-                    type: "multiple",
-                    options: [
-                        "Leveraging core competencies",
-                        "Sharing activities",
-                        "The corporate parenting advantage",
-                        "Economies of scope"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What does 'economies of scope' allow businesses to do?",
-                    type: "multiple",
-                    options: [
-                        "Increase financial losses",
-                        "Leverage core competencies",
-                        "Create new legal entities",
-                        "Avoid vertical integration"
-                    ],
+                    text: "Self-defence under Article 51 requires the Security Council's prior authorization before any defensive action can be taken.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 1
                 },
                 {
-                    text: "What is involved in asset restructuring?",
-                    type: "multiple",
-                    options: [
-                        "Changing the debt-equity mix",
-                        "Sale of unproductive assets",
-                        "Changes in top management",
-                        "Adding debt or equity"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a key limitation of portfolio models?",
-                    type: "multiple",
-                    options: [
-                        "They consider all factors.",
-                        "They always suggest accurate strategic alternatives.",
-                        "SBU's are compared on only two dimensions.",
-                        "They fully capture synergies."
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "How can diversification reduce variability?",
-                    type: "multiple",
-                    options: [
-                        "By increasing stockholder costs",
-                        "In revenues and profits over time",
-                        "By predicting economic cycles",
-                        "By avoiding overall strategy"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is involved in a merger?",
-                    type: "multiple",
-                    options: [
-                        "One firm buying another",
-                        "Combining two firms to form a new legal entity",
-                        "Selling unproductive assets",
-                        "Pooling resources without combining"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is NOT a divestment objective?",
-                    type: "multiple",
-                    options: [
-                        "Cutting financial losses",
-                        "Redirecting focus on core businesses",
-                        "Increasing acquisition spending",
-                        "Freeing up resources for alternatives"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is a key factor for divestiture success?",
-                    type: "multiple",
-                    options: [
-                        "Adding emotion to the decision",
-                        "Ignoring the value of the business",
-                        "Knowing the business's value",
-                        "Rushing the deal"
-                    ],
-                    correctAnswer: 2
-                },
-                {
-                    text: "What is a motive for strategic alliances?",
-                    type: "multiple",
-                    options: [
-                        "To increase costs in the value chain",
-                        "Ability to enter new markets",
-                        "To avoid diffusing new technologies",
-                        "Need for improper partners"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is a limitation of strategic alliances?",
-                    type: "multiple",
-                    options: [
-                        "Partners always have compatible strengths",
-                        "Partners' strengths should be unique",
-                        "They remove the need for trust",
-                        "They easily avoid creating synergies"
-                    ],
-                    correctAnswer: 1
-                },
-                {
-                    text: "What is an advantage of internal development?",
-                    type: "multiple",
-                    options: [
-                        "Need to share wealth",
-                        "Combining activities across value chains",
-                        "Merging diverse cultures",
-                        "No need for external funding"
-                    ],
-                    correctAnswer: 3
-                },
-                {
-                    text: "What is an antitakeover tactic?",
-                    type: "multiple",
-                    options: [
-                        "Greenmail",
-                        "Value creation",
-                        "Synergy development",
-                        "Internal development"
-                    ],
+                    text: "Customary international law requires that defensive measures taken under Article 51 must be necessary and proportional to the armed attack sustained.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 0
                 },
                 {
-                    text: "How can acquisitions destroy value?",
-                    type: "multiple",
-                    options: [
-                        "Integrating activities effectively",
-                        "Paying a premium for the target firm",
-                        "Avoiding imitation",
-                        "Creating synergy"
-                    ],
+                    text: "The Security Council's authority to use force is found in Chapter VI of the UN Charter.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 1
                 },
                 {
-                    text: "What is a benefit of related diversification?",
-                    type: "multiple",
-                    options: [
-                        "Benefits derive from hierarchical relationships only",
-                        "Sharing intangible resources",
-                        "Value creation derived from individual business units",
-                        "Avoiding economies of scope"
-                    ],
+                    text: "The Council must first make a determination of a threat to the peace, breach of the peace, or act of aggression before taking coercive measures.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Sanctions regimes, such as the complete interruption of economic relations, fall under the non-forcible measures of Article 41.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Article 42 grants the Security Council the authority to directly deploy its own standing UN armed forces in a military operation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 1
                 },
                 {
-                    text: "What is a way market power can be gained?",
-                    type: "multiple",
-                    options: [
-                        "Backward integration",
-                        "Decreased bargaining power",
-                        "Avoiding vertical integration",
-                        "Increased competition"
-                    ],
+                    text: "The prevailing legal view maintains that pre-emptive selfdefence (against a merely potential attack) is not lawful under Article 51.",
+                    type: "truefalse",
+                    options: ["True", "False"],
                     correctAnswer: 0
                 }
             ];
-
-            // تقسيم أسئلة التخطيط الاستراتيجي إلى امتحانين
-            const totalStrategicQuestions = strategicQuestions.length;
-            examData.strategic.quiz1.questions = strategicQuestions.slice(0, Math.floor(totalStrategicQuestions/2));
-            examData.strategic.quiz2.questions = strategicQuestions.slice(Math.floor(totalStrategicQuestions/2));
 
             // ========== Family Law (قانون الأسرة) ==========
             // Exam 1: 25 True/False Questions in Arabic
@@ -3323,8 +2764,7 @@
                 stats.recentResults.forEach(result => {
                     const subjectNames = {
                         humanitarian: "Humanitarian Law",
-                        general: "Public Law",
-                        strategic: "Strategic Planning",
+                        general: "Public International Law",
                         civil: "Civil Law",
                         family: "Family Law"
                     };
@@ -3405,7 +2845,6 @@
             const subjectNames = {
                 humanitarian: "International Humanitarian Law",
                 general: "Public International Law",
-                strategic: "Strategic Planning",
                 civil: "Civil Law",
                 family: "Family Law"
             };
@@ -3679,7 +3118,6 @@
             const subjectNames = {
                 humanitarian: "International Humanitarian Law",
                 general: "Public International Law",
-                strategic: "Strategic Planning",
                 civil: "Civil Law",
                 family: "Family Law"
             };
