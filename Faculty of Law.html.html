@@ -1,0 +1,3513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams System</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* متغيرات الألوان */
+        :root {
+            --primary: #1a237e;
+            --secondary: #ffd700;
+            --accent: #d32f2f;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --dark: #0a0a2a;
+            --light: #f5f5f5;
+            --glass: rgba(255, 255, 255, 0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --card-bg: linear-gradient(145deg, rgba(26, 35, 126, 0.95), rgba(10, 10, 42, 0.95));
+        }
+
+        /* وضع الظلام التلقائي */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #1a237e;
+                --secondary: #ffd700;
+                --accent: #ff6b6b;
+                --dark: #0a0a2a;
+                --light: #e0e0e0;
+                --card-bg: linear-gradient(145deg, rgba(26, 35, 126, 0.95), rgba(30, 30, 60, 0.95));
+            }
+        }
+
+        /* إعادة الضبط الأساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* النص العربي */
+        .arabic-text {
+            font-family: 'Cairo', 'Arial', sans-serif !important;
+            text-align: right;
+            direction: rtl;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 50%, var(--accent) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* تصميم الكارد الرئيسي */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                        0 0 0 1px rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass);
+        }
+
+        /* عنوان التصميم */
+        .designer-credit {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--secondary);
+            background: rgba(26, 35, 126, 0.8);
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            z-index: 10;
+        }
+
+        /* الشاشات المختلفة */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* شاشة تسجيل الدخول */
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--secondary), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .subject-title {
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* حقول الإدخال والأزرار */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            background: rgba(26, 35, 126, 0.7);
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--light);
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* اختيار المواد */
+        .subject-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 768px) {
+            .subject-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .subject-btn {
+            background: rgba(26, 35, 126, 0.7);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--light);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .subject-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .subject-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        /* شاشة الامتحان */
+        .timer-container {
+            background: rgba(26, 35, 126, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(26, 35, 126, 0.7);
+            border-radius: 5px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: var(--light);
+            background: rgba(26, 35, 126, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background: rgba(26, 35, 126, 0.7);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        .option:hover {
+            background: rgba(40, 50, 150, 0.7);
+            transform: translateX(5px);
+            border-color: var(--secondary);
+        }
+
+        .option.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        /* التنقل بين الأسئلة */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .navigation .btn {
+            width: 48%;
+            margin-top: 0;
+        }
+
+        /* شاشة النتائج */
+        .results-summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(26, 35, 126, 0.7);
+            border-radius: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--secondary), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .review-container {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .review-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(26, 35, 126, 0.5);
+        }
+
+        .review-item.incorrect {
+            border-left: 4px solid var(--accent);
+        }
+
+        /* شاشة الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(26, 35, 126, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--secondary);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .stats-history {
+            background: rgba(26, 35, 126, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* رسائل الخطأ */
+        .error-message {
+            color: var(--accent);
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* رسالة انتهاء الوقت */
+        .time-up-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 35, 126, 0.95);
+            color: var(--accent);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 1000;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px rgba(211, 47, 47, 0.7);
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* عناصر العائمة للخلفية */
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-1000px) rotate(720deg); }
+        }
+
+        /* زر الرجوع */
+        .back-btn {
+            background: rgba(26, 35, 126, 0.7);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .subject-selector {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .subject-btn {
+                padding: 15px;
+                min-height: 100px;
+            }
+            
+            .question-text {
+                font-size: 16px;
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .score-display {
+                font-size: 36px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 5px;
+            }
+            
+            .card {
+                padding: 15px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .navigation .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- عناصر عائمة في الخلفية -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 100px; height: 100px; top: 40%; left: 40%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="width: 70px; height: 70px; top: 80%; left: 20%; animation-delay: 6s;"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container">
+        <div class="card">
+            <!-- اسم المصمم -->
+            <div class="designer-credit">Mohamed Nasser Mohammed</div>
+
+            <!-- المؤقت -->
+            <div class="timer-container" id="timerContainer" style="display: none;">
+                <i class="fas fa-clock"></i> Time Remaining: <span id="timerDisplay">00:00</span>
+            </div>
+
+            <!-- ========== شاشة تسجيل الدخول ========== -->
+            <div id="loginScreen" class="screen active">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h1>Exams System</h1>
+                    <div class="subject-title">Interactive Assessment Platform</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Your Name 👇</label>
+                    <input type="text" id="username" placeholder="Enter your full name">
+                </div>
+
+                <button id="loginBtn" class="btn">
+                    <i class="fas fa-play-circle"></i> Start Learning Journey
+                </button>
+
+                <div id="loginError" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Name must be at least 4 characters long!
+                </div>
+            </div>
+
+            <!-- ========== شاشة اختيار المادة ========== -->
+            <div id="subjectScreen" class="screen">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h2>Welcome, <span id="userNameSubject"></span>!</h2>
+                    <div class="subject-title">Select the subject you want to test yourself in</div>
+                </div>
+
+                <div class="subject-selector" id="subjectSelector">
+                    <div class="subject-btn active" data-subject="humanitarian">
+                        <div class="subject-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <div>International Humanitarian Law</div>
+                    </div>
+                    <div class="subject-btn" data-subject="general">
+                        <div class="subject-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div>Public International Law</div>
+                    </div>
+                    <div class="subject-btn" data-subject="civil">
+                        <div class="subject-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div>Civil Law</div>
+                    </div>
+                    <div class="subject-btn" data-subject="family">
+                        <div class="subject-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="arabic-text">قانون الأسرة</div>
+                    </div>
+                </div>
+
+                <button id="selectSubjectBtn" class="btn">
+                    <i class="fas fa-arrow-right"></i> Proceed to Exam Selection
+                </button>
+
+                <button id="viewStatsBtn" class="btn" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                    <i class="fas fa-chart-bar"></i> View Statistics
+                </button>
+
+                <button id="backToLoginBtn" class="btn" style="background: linear-gradient(135deg, #333, #666);">
+                    <i class="fas fa-sign-out-alt"></i> Back to Login
+                </button>
+            </div>
+
+            <!-- ========== شاشة اختيار الامتحان ========== -->
+            <div id="welcomeScreen" class="screen">
+                <button id="backToSubjectBtn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Subject Selection
+                </button>
+
+                <div class="login-header">
+                    <h2><span id="userNameWelcome"></span></h2>
+                    <div class="subject-title" id="selectedSubjectText">Select the exam you want to start</div>
+                </div>
+
+                <div class="subject-selector" id="welcomeQuizSelector">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+
+                <button id="startQuizBtn" class="btn">
+                    <i class="fas fa-play"></i> Start Selected Exam
+                </button>
+            </div>
+
+            <!-- ========== شاشة الامتحان ========== -->
+            <div id="quizScreen" class="screen">
+                <div class="subject-title" id="welcomeMessage">
+                    <i class="fas fa-user-graduate"></i> You are answering as: <span id="userName"></span>
+                </div>
+
+                <div class="quiz-info">
+                    <span id="quizTitle">Exam Title</span>
+                    <span id="questionNumber">Question 1 of 10</span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options-container" id="optionsContainer"></div>
+                </div>
+
+                <div class="navigation">
+                    <button id="prevBtn" class="btn">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button id="nextBtn" class="btn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- قسم النتائج -->
+                <div class="results-summary" id="resultsSummary" style="display: none;">
+                    <div class="login-header">
+                        <div class="login-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Exam Results Summary</h3>
+                        <div class="score-display" id="scoreDisplay"></div>
+                        <div class="subject-title" id="scoreText"></div>
+                    </div>
+
+                    <div class="subject-title">
+                        <div id="correctAnswers"></div>
+                        <div id="incorrectAnswers"></div>
+                    </div>
+
+                    <div class="review-container" id="reviewContainer"></div>
+
+                    <button id="backToQuizzesBtn" class="btn">
+                        <i class="fas fa-redo"></i> Back to Exam Selection
+                    </button>
+
+                    <button id="viewStatsFromResultsBtn" class="btn" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                        <i class="fas fa-chart-bar"></i> View Statistics
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== شاشة الإحصائيات ========== -->
+            <div id="statsScreen" class="screen">
+                <button id="backToLoginFromStatsBtn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h2>Statistics</h2>
+                    <div class="subject-title">Your performance overview</div>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+
+                <div class="stats-history">
+                    <h3 style="margin-bottom: 15px; color: var(--secondary);">Recent Exams</h3>
+                    <div id="historyList">
+                        <!-- سيتم ملؤها ديناميكياً -->
+                    </div>
+                </div>
+
+                <button id="clearStatsBtn" class="btn" style="background: linear-gradient(135deg, var(--accent), #ff4444);">
+                    <i class="fas fa-trash"></i> Clear All Statistics
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الصوت الإسلامي -->
+    <audio id="islamicAudio" preload="auto">
+        <source src="https://everyayah.com/data/Abdul_Basit_Murattal_64kbps/001001.mp3" type="audio/mpeg">
+        <source src="https://www.islamicfinder.org/audio/bismillah.ogg" type="audio/ogg">
+    </audio>
+
+    <script>
+        // ========== البيانات الأساسية ==========
+        const examData = {
+            humanitarian: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            },
+            general: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            },
+            civil: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                },
+                quiz3: {
+                    title: "Exam 3",
+                    questions: []
+                }
+            },
+            family: {
+                quiz1: {
+                    title: "Exam 1",
+                    questions: []
+                },
+                quiz2: {
+                    title: "Exam 2",
+                    questions: []
+                }
+            }
+        };
+
+        // ========== متغيرات التطبيق ==========
+        let currentUser = null;
+        let currentSubject = "humanitarian";
+        let currentQuiz = "quiz1";
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let quizResults = {};
+        let shuffledQuestions = {};
+        let timer;
+        let totalTimeLeft = 0;
+        let userName = "";
+        let timeUp = false;
+
+        // ========== عناصر DOM ==========
+        const loginScreen = document.getElementById('loginScreen');
+        const subjectScreen = document.getElementById('subjectScreen');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const statsScreen = document.getElementById('statsScreen');
+        
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const loginError = document.getElementById('loginError');
+        
+        const userNameSubject = document.getElementById('userNameSubject');
+        const userNameWelcome = document.getElementById('userNameWelcome');
+        const selectedSubjectText = document.getElementById('selectedSubjectText');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const userNameSpan = document.getElementById('userName');
+        
+        const quizTitle = document.getElementById('quizTitle');
+        const questionNumber = document.getElementById('questionNumber');
+        const progressBar = document.getElementById('progressBar');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        const subjectSelector = document.getElementById('subjectSelector');
+        const welcomeQuizSelector = document.getElementById('welcomeQuizSelector');
+        
+        const resultsSummary = document.getElementById('resultsSummary');
+        const scoreText = document.getElementById('scoreText');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const correctAnswers = document.getElementById('correctAnswers');
+        const incorrectAnswers = document.getElementById('incorrectAnswers');
+        const reviewContainer = document.getElementById('reviewContainer');
+        
+        const selectSubjectBtn = document.getElementById('selectSubjectBtn');
+        const startQuizBtn = document.getElementById('startQuizBtn');
+        const backToQuizzesBtn = document.getElementById('backToQuizzesBtn');
+        const backToSubjectBtn = document.getElementById('backToSubjectBtn');
+        
+        const timerContainer = document.getElementById('timerContainer');
+        const timerDisplay = document.getElementById('timerDisplay');
+        
+        const viewStatsBtn = document.getElementById('viewStatsBtn');
+        const viewStatsFromResultsBtn = document.getElementById('viewStatsFromResultsBtn');
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
+        const backToLoginFromStatsBtn = document.getElementById('backToLoginFromStatsBtn');
+        
+        const statsGrid = document.getElementById('statsGrid');
+        const historyList = document.getElementById('historyList');
+        const clearStatsBtn = document.getElementById('clearStatsBtn');
+        
+        const islamicAudio = document.getElementById('islamicAudio');
+
+        // ========== تشغيل الصوت الإسلامي ==========
+        function playIslamicAudio() {
+            try {
+                islamicAudio.currentTime = 0;
+                islamicAudio.play().catch(e => {
+                    console.log("Audio play failed:", e);
+                    if ('speechSynthesis' in window) {
+                        const msg = new SpeechSynthesisUtterance("بسم الله الرحمن الرحيم");
+                        msg.lang = 'ar-SA';
+                        msg.rate = 0.8;
+                        window.speechSynthesis.speak(msg);
+                    }
+                });
+            } catch (e) {
+                console.log("Audio error:", e);
+            }
+        }
+
+        // ========== تحميل جميع الأسئلة الكاملة ==========
+        function loadAllQuestions() {
+            // ========== International Humanitarian Law ==========
+            // Exam 1: 16 MCQ + 16 T&F = 32 questions
+            examData.humanitarian.quiz1.questions = [
+                // MCQ Questions 1-16
+                {
+                    text: "Which principle requires combatants to differentiate between military objectives and civilian objects?",
+                    type: "multiple",
+                    options: [
+                        "The Principle of Humanity",
+                        "The Principle of Proportionality",
+                        "The Principle of Distinction",
+                        "The Principle of Precaution"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the material, an indiscriminate attack is one that is:",
+                    type: "multiple",
+                    options: [
+                        "Directed at a specific military objective.",
+                        "Directed at a civilian object.",
+                        "Not directed at a specific military objective.",
+                        "Conducted with advanced warning to civilians."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is an example of an object that receives special protection due to containing 'dangerous forces'?",
+                    type: "multiple",
+                    options: [
+                        "A historical monument",
+                        "A nuclear power plant",
+                        "A military communications post",
+                        "A civilian residence"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A military commander bombs an enemy command post, but the attack is expected to also kill hundreds of civilians in a nearby residential area. This action would most likely violate the:",
+                    type: "multiple",
+                    options: [
+                        "Principle of Humanity",
+                        "Principle of Distinction",
+                        "Principle of Proportionality",
+                        "Prohibition of Indiscriminate Attacks"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following groups is protected under the laws of armed conflict?",
+                    type: "multiple",
+                    options: [
+                        "Journalists",
+                        "Spies",
+                        "Combatants who have not surrendered",
+                        "Individuals who are directly participating in hostilities"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An object's contribution to military action can be judged by its nature, location, purpose, or:",
+                    type: "multiple",
+                    options: ["Age", "Value", "Use", "Size"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is NOT an obligation of the Principle of Precauition?",
+                    type: "multiple",
+                    options: [
+                        "Choosing a method of attack that will minimize civilian casualties.",
+                        "Giving effective advance warning to civilians of impending attacks.",
+                        "Deliberately using a civilian as a human shield.",
+                        "Verifying that targets are military objectives."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which Geneva Convention is the cornerstone of the law on Prisoners of War?",
+                    type: "multiple",
+                    options: [
+                        "First Geneva Convention",
+                        "Second Geneva Convention",
+                        "Third Geneva Convention",
+                        "Fourth Geneva Convention"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the material, the principle that serves as a reminder to alleviate suffering and respect dignity is:",
+                    type: "multiple",
+                    options: [
+                        "The Principle of Distinction",
+                        "The Principle of Unconditional Care",
+                        "The Principle of Humanity",
+                        "The Principle of Proportionality"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the Third Geneva Convention, which of the following is a right of a Prisoner of War?",
+                    type: "multiple",
+                    options: [
+                        "Refusal of all medical care",
+                        "Freedom to return home whenever they wish",
+                        "Being treated as a criminal",
+                        "Right to send and receive letters from their families"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "A medical unit can lose its protected status if it is used to:",
+                    type: "multiple",
+                    options: [
+                        "Provide care to its own staff",
+                        "Provide care to wounded enemy soldiers",
+                        "Transport medical supplies",
+                        "Commit acts harmful to the enemy"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The First and Second Geneva Conventions establish rules for the treatment of the wounded and sick on land and at sea, respectively. These rules apply to:",
+                    type: "multiple",
+                    options: [
+                        "The capturing power only",
+                        "The captured individuals only",
+                        "Only states that have ratified the conventions",
+                        "All parties to a conflict"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "According to the material, a major challenge in modern conflicts is the inconsistent adherence to the Geneva Conventions by:",
+                    type: "multiple",
+                    options: [
+                        "Member states of the United Nations",
+                        "Permanent members of the Security Council",
+                        "Non-state armed groups",
+                        "International humanitarian organizations"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is considered a grave breach of the Conventions and a war crime?",
+                    type: "multiple",
+                    options: [
+                        "Denying a wounded combatant medical care.",
+                        "Providing medical care to the enemy.",
+                        "Allowing captured combatants to correspond with their families.",
+                        "Granting humanitarian organizations access to a conflict zone."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following is an example of an act of perfidy?",
+                    type: "multiple",
+                    options: [
+                        "Giving a warning before an attack.",
+                        "Feigning surrender to gain a military advantage.",
+                        "Targeting a legitimate military objective.",
+                        "Using a recognized humanitarian emblem."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Ottawa Treaty of 1997 prohibits the use, production, and transfer of:",
+                    type: "multiple",
+                    options: [
+                        "Chemical weapons",
+                        "Blinding laser weapons",
+                        "Anti-personnel landmines",
+                        "Nuclear weapons"
+                    ],
+                    correctAnswer: 2
+                },
+                // T&F Questions 1-16
+                {
+                    text: "A 'protected person' is a legal term under the Geneva Conventions for an individual who is no longer taking part in hostilities.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Fourth Geneva Convention is dedicated entirely to the status and treatment of Prisoners of War (POWs).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Medical personnel and chaplains are granted protected status under International Humanitarian Law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The concept of 'protected persons' is exclusive to international armed conflicts.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A civilian who takes a direct part in hostilities loses their protected status for the duration of that participation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The First and Second Geneva Conventions establish that all wounded, sick, and shipwrecked members of the armed forces are to be respected and protected without distinction.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Forced deportation and collective punishment are practices that are explicitly prohibited under the Fourth Geneva Convention.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "According to the Principle of Distinction, all persons who are not members of the armed forces are considered civilians.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A military objective is defined as any object that provides an effective contribution to military action.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Principle of Proportionality states that attacks are prohibited if they are expected to cause any civilian harm whatsoever.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The direct targeting of civilians or civilian objects is considered a war crime.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A medical hospital loses its protected status if it is used to store medical supplies for its own staff.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Principle of Precautions requires all feasible steps to be taken to avoid or minimize civilian harm during military operations.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Protection of Civilians is now considered the central moral imperative of modern armed conflict.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A Prisoner of War (POW) can be subjected to public humiliation by the capturing power.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Third Geneva Convention provides a comprehensive legal framework for the treatment of wounded and sick on land.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                }
+            ];
+
+            // Exam 2: 16 MCQ + 16 T&F = 32 questions
+            examData.humanitarian.quiz2.questions = [
+                // MCQ Questions 17-32
+                {
+                    text: "The Principle of Prohibiting Unnecessary Suffering is most directly related to which of the following?",
+                    type: "multiple",
+                    options: [
+                        "The use of force",
+                        "The protection of civilians",
+                        "The treatment of prisoners of war",
+                        "The methods of warfare"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "According to the material, an act of 'perfidy' is also known as:",
+                    type: "multiple",
+                    options: ["Treachery", "Starvation", "Indiscriminate attack", "Proportionality"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Geneva Protocol of 1925 banned the use of which types of weapons in war?",
+                    type: "multiple",
+                    options: [
+                        "Landmines and cluster munitions",
+                        "Blinding laser and dum-dum bullets",
+                        "Biological and chemical weapons",
+                        "Nuclear weapons and explosives"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following treaties aims to address the legal gap regarding nuclear weapons?",
+                    type: "multiple",
+                    options: [
+                        "The Ottawa Treaty",
+                        "The Convention on Certain Conventional Weapons (CCW)",
+                        "The Treaty on the Prohibition of Nuclear Weapons (2017)",
+                        "The Chemical Weapons Convention (CWC)"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The laws on prohibited weapons and limitations on the use of force aim to:",
+                    type: "multiple",
+                    options: [
+                        "Achieve military victory for one side.",
+                        "Punish all combatants for their actions.",
+                        "Draw a clear line that military necessity cannot cross.",
+                        "Provide humanitarian aid to civilians only"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What is the primary responsibility of states regarding the implementation of IHL?",
+                    type: "multiple",
+                    options: [
+                        "Supervising other states",
+                        "Promoting the law through publications",
+                        "Prosecuting their own personnel for violations",
+                        "Providing financial aid to victims"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle of 'prosecute or extradite' (aut dedere aut judicare) applies to:",
+                    type: "multiple",
+                    options: [
+                        "All crimes under domestic law",
+                        "Grave breaches of the Geneva Conventions",
+                        "All violations of IHL",
+                        "Acts of espionage only"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which organization is granted a unique legal status under the Geneva Conventions as a neutral intermediary?",
+                    type: "multiple",
+                    options: [
+                        "The United Nations Security Council",
+                        "The International Criminal Court (ICC)",
+                        "The International Committee of the Red Cross (ICRC)",
+                        "The Permanent Court of Arbitration"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The Nuremberg and Tokyo tribunals were historically significant because they established the precedent for:",
+                    type: "multiple",
+                    options: [
+                        "The prosecution of individuals for grave violations.",
+                        "The creation of the United Nations.",
+                        "The principle of universal jurisdiction.",
+                        "Sanctions against aggressor states."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "According to the material, which of the following is an example of a war crime?",
+                    type: "multiple",
+                    options: [
+                        "A state's use of force in self-defense.",
+                        "Intentionally targeting civilians or civilian objects.",
+                        "A state's declaration of war.",
+                        "A soldier's act of insubordination."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The ICC's jurisdiction over war crimes is based on which legal instrument?",
+                    type: "multiple",
+                    options: [
+                        "The Geneva Conventions",
+                        "The Hague Conventions",
+                        "The Rome Statute",
+                        "The UN Charter"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle of complementarity means that the ICC will only exercise its jurisdiction when:",
+                    type: "multiple",
+                    options: [
+                        "A case is referred by a UN member state.",
+                        "A case is referred by the International Committee of the Red Cross (ICRC).",
+                        "National legal systems are unwilling or unable to prosecute.",
+                        "The crime involves a non-state armed group."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is a primary difference between a war crime and genocide?",
+                    type: "multiple",
+                    options: [
+                        "Genocide is always a war crime.",
+                        "War crimes involve the intent to destroy a group.",
+                        "Genocide involves a specific intent to destroy a group, whereas war crimes are violations of the laws of war.",
+                        "Only war crimes are subject to international prosecution."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following is NOT a challenge to international accountability discussed in the material?",
+                    type: "multiple",
+                    options: [
+                        "The lack of political will to prosecute.",
+                        "The difficulty of evidence collection.",
+                        "The ICC's limited budget.",
+                        "The lack of cooperation from powerful states."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The International Criminal Tribunal for the former Yugoslavia (ICTY) and the International Criminal Tribunal for Rwanda (ICTR) are examples of:",
+                    type: "multiple",
+                    options: [
+                        "International criminal courts with permanent jurisdiction.",
+                        "Historical tribunals from the post-World War II era.",
+                        "Ad-hoc tribunals created for specific conflicts.",
+                        "Domestic courts with extraterritorial jurisdiction."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle that allows a state to prosecute a war criminal regardless of where the crime was committed is known as:",
+                    type: "multiple",
+                    options: [
+                        "Territorial Jurisdiction",
+                        "Extraterritorial Jurisdiction",
+                        "Universal jurisdiction.",
+                        "Concurrent Jurisdiction"
+                    ],
+                    correctAnswer: 2
+                },
+                // T&F Questions 17-32
+                {
+                    text: "According to the First and Second Geneva Conventions, the wounded and sick must be cared for without any adverse distinction.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Once hostilities have ceased, Prisoners of War must be repatriated without delay.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The way a state treats a captured combatant is considered a test of its adherence to International Humanitarian Law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Humanitarian aid workers are a category of protected persons under the law (IHL).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The status of a captured individual as a combatant or a civilian is always clear in contemporary conflicts.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The prohibition of certain weapons is based on the principle of causing unnecessary suffering.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The St. Petersburg Declaration of 1868 prohibited the use of dum-dum bullets.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A weapon is considered indiscriminate if it can distinguish between combatants and civilians after being deployed.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Using civilians as 'human shields' to protect a military objective is a serious violation of the laws of armed conflict.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Chemical Weapons Convention (CWC) bans the use of chemical weapons, but not their development or production.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The use of starvation of civilians as a method of warfare is strictly forbidden under International Humanitarian Law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Martens Clause is a key principle that underpins the prohibition of unnecessary suffering.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The primary responsibility for implementing International Humanitarian Law rests with the International Criminal Court (ICC).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "States are obligated to translate the provisions of IHL treaties into their national legislation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The International Committee of the Red Cross (ICRC) has the right to visit prisoners of war and assess their conditions.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Nuremberg and Tokyo tribunals established the precedent that individuals can be held criminally responsible for grave violations.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                }
+            ];
+
+            // ========== Public International Law ==========
+            // Exam 1 (15 أسئلة اختيار من متعدد + 15 صح/خطأ)
+            examData.general.quiz1.questions = [
+                // MCQs 1-15
+                {
+                    text: "What is the legal effect of a Circumstance Precluding Wrongfulness (CPW)?",
+                    type: "multiple",
+                    options: [
+                        "It voids the international obligation itself.",
+                        "It prevents the attribution of the conduct to the State.",
+                        "It renders the otherwise wrongful act legally non-wrongful.",
+                        "It merely reduces the amount of compensation owed."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The form of reparation known as Compensation is designed to cover:",
+                    type: "multiple",
+                    options: [
+                        "Moral injury and insults.",
+                        "All financially assessable damage, including lost profits (lucrum cessans).",
+                        "The restoration of illegally seized property.",
+                        "Guarantees of non-repetition."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The ARSIWA standard for attributing the actions of private individuals or groups to a State is:",
+                    type: "multiple",
+                    options: [
+                        "General support or influence.",
+                        "Effective control over the specific conduct constituting the IWA.",
+                        "Implicit prior knowledge of the plan.",
+                        "Failure to prosecute the individuals afterward."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which defence applies when an irresistible force or unforeseen event makes performance of the obligation materially impossible?",
+                    type: "multiple",
+                    options: ["Necessity", "Distress", "Consent", "Force Majeure"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The primary and immediate obligation for a State committing a continuing IWA is:",
+                    type: "multiple",
+                    options: ["Restitution", "Cessation and non-repetition", "Satisfaction", "Negotiation of a new treaty"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The doctrine of State Responsibility is generally considered to be:",
+                    type: "multiple",
+                    options: [
+                        "Based on the subjective fault (mens rea) of the State.",
+                        "Objective, requiring only the two elements of Attribution and Breach.",
+                        "Applicable only to breaches of multilateral treaties.",
+                        "Applicable only when the breach involves the use of armed force."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The three forms of reparation—Restitution, Compensation, and Satisfaction—are aimed at achieving the goal of:",
+                    type: "multiple",
+                    options: [
+                        "Punitive damages.",
+                        "Restitutio in integrum.",
+                        "Collective security.",
+                        "Jus cogens enforcement."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is not a recognized circumstance precluding wrongfulness in ARSIWA?",
+                    type: "multiple",
+                    options: ["Countermeasures", "Consent", "Self-Defence", "Necessity"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which VCLT article enshrines the principle Pacta Sunt Servanda?",
+                    type: "multiple",
+                    options: ["Article 19", "Article 26", "Article 53", "Article 62"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which action formally expresses a State's consent to be bound by a treaty internationally?",
+                    type: "multiple",
+                    options: ["Negotiation", "Adoption", "Ratification", "Authentication (Signing)"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "According to the VCLT, which ground leads to Absolute Invalidity (Void)?",
+                    type: "multiple",
+                    options: [
+                        "Error (Art. 48)",
+                        "Fraud (Art. 49)",
+                        "Coercion of a State (Art. 52)",
+                        "Internal Law Violation (Art. 46)"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "If an objecting State declares that it does not consider the treaty in force with the reserving State, this is known as a:",
+                    type: "multiple",
+                    options: [
+                        "Simple Objection",
+                        "Qualified Objection",
+                        "Peremptory Objection",
+                        "Interpretive Declaration"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is the purpose of supplementary means of interpretation (Art. 32)?",
+                    type: "multiple",
+                    options: [
+                        "To override the general rule of interpretation.",
+                        "To replace the object and purpose of the treaty.",
+                        "To confirm the meaning when the general rule is ambiguous or absurd.",
+                        "To change the text of the treaty after entry into force."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A treaty that conflicts with a Jus Cogens norm is:",
+                    type: "multiple",
+                    options: [
+                        "Valid but suspended.",
+                        "Subject to Relative Invalidity.",
+                        "Absolutely Void from the outset.",
+                        "Subject to acceptance by the UN Security Council."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which ICJ case established the 'object and purpose' test for the permissibility of reservations?",
+                    type: "multiple",
+                    options: [
+                        "Gabèíkovo-Nagymaros Project (1997)",
+                        "Pulau Ligitan and Pulau Sipadan (2002)",
+                        "Reservations to the Convention on the Prevention and Punishment of the Crime of Genocide (1951)",
+                        "Nuclear Tests Case (1974)"
+                    ],
+                    correctAnswer: 2
+                },
+                // True/False Questions 1-15
+                {
+                    text: "Enforcement Jurisdiction is generally broad, allowing a State to send police officers into another State to arrest suspects without prior consent.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Universal Principle of jurisdiction applies only to crimes committed within the territory of the prosecuting State.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The doctrine of State Immunity is founded on the principle of the sovereign equality of States.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Under the Protective Principle, a State may prosecute non-nationals for acts committed abroad if those acts threaten its national security interests, such as counterfeiting its currency.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Restrictive Immunity means that a State's sovereign acts (Acta Jure Imperii) are still immune, but its commercial acts (Acta Jure Gestionis) are not.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Vienna Convention on Diplomatic Relations (VCDR) grants diplomats personal immunity (ratione personae) for both their official and private acts while in office.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A Head of State retains personal immunity even after leaving office.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Subjective Territorial Principle allows a State to claim jurisdiction over a crime that was initiated within its borders but completed in another State.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The only recourse available to a receiving State against a diplomat who abuses their immunity is to declare them Persona Non Grata.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The shift from Absolute Immunity to Restrictive Immunity occurred primarily because States rarely engaged in commercial activities.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Vienna Convention on the Law of Treaties (VCLT) is often referred to as the 'Treaty on Treaties'.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The foundational principle of treaty law, Pacta Sunt Servanda, means that treaties are optional for the parties.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A treaty is formally defined by the VCLT as an international agreement concluded between States in any form (written or oral).",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Ratification is the initial step in the conclusion of a treaty, preceding negotiation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A reservation is a unilateral statement by a State to exclude or modify the legal effect of certain treaty provisions.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                }
+            ];
+
+            // Exam 2 (15 أسئلة اختيار من متعدد + 15 صح/خطأ)
+            examData.general.quiz2.questions = [
+                // MCQs 16-30
+                {
+                    text: "According to VCLT, the material breach of a treaty allows the other parties to invoke it as a ground for:",
+                    type: "multiple",
+                    options: [
+                        "Absolute Invalidity",
+                        "Suspension or Termination",
+                        "Simple Objection",
+                        "Only interpretation"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which body is established by the UN Charter as the principal judicial organ of the United Nations?",
+                    type: "multiple",
+                    options: [
+                        "The Permanent Court of Arbitration (PCA).",
+                        "The International Criminal Court (ICC).",
+                        "The UN Security Council.",
+                        "The International Court of Justice (ICJ)."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which diplomatic method involves a third party actively proposing terms of settlement to the disputing parties?",
+                    type: "multiple",
+                    options: ["Good Offices", "Mediation", "Inquiry", "Negotiation"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Consent to the jurisdiction of an ad hoc arbitral tribunal is typically established through a specific agreement known as a:",
+                    type: "multiple",
+                    options: ["Compromis", "Optional Clause", "Jurisdictional Clause", "Pacta Sunt Servanda"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The ICJ's jurisdiction ratione personae (over the parties) in contentious cases is limited to:",
+                    type: "multiple",
+                    options: [
+                        "UN Member States and International Organizations.",
+                        "All States and Individuals.",
+                        "States only.",
+                        "International Organizations only."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A State makes a prior, general declaration accepting the compulsory jurisdiction of the ICJ concerning any other State accepting the same obligation. This is a reference to the:",
+                    type: "multiple",
+                    options: [
+                        "Jurisdictional Clause",
+                        "Special Agreement",
+                        "Optional Clause (Art. 36(2))",
+                        "Forum Prorogatum"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The method that establishes an impartial fact-finding commission solely to clarify disputed questions of fact is called:",
+                    type: "multiple",
+                    options: ["Conciliation", "Mediation", "Inquiry", "Negotiation"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The final, binding decision issued by an international arbitral tribunal is legally referred to as a:",
+                    type: "multiple",
+                    options: ["Judgment", "Verdict", "Award", "Finding"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The principle codified in Article 2(4) is widely regarded as possessing the status of:",
+                    type: "multiple",
+                    options: [
+                        "Pacta Sunt Servanda",
+                        "Erga Omnes obligation",
+                        "Customary Law",
+                        "Both B and C, and possibly Jus Cogens"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which UN Charter Chapter addresses the Security Council's powers to take measures with respect to threats to the peace?",
+                    type: "multiple",
+                    options: ["Chapter VI", "Chapter VII", "Chapter VIII", "Chapter IX"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "For an act of self-defence to be lawful, the initial use of force must be in response to:",
+                    type: "multiple",
+                    options: [
+                        "A diplomatic disagreement",
+                        "An economic blockade",
+                        "An armed attack that has occurred",
+                        "A hostile political statement"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "The Security Council's initial step in responding to a crisis under Chapter VII is to:",
+                    type: "multiple",
+                    options: [
+                        "Determine the existence of a threat to the peace (Art. 39)",
+                        "Impose economic sanctions (Art. 41)",
+                        "Immediately authorize the use of force (Art. 42)",
+                        "Request an advisory opinion from the ICJ"
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which two requirements for lawful self-defence were emphasized by the ICJ in the Nicaragua case?",
+                    type: "multiple",
+                    options: [
+                        "Effectiveness and Timeliness",
+                        "Retaliation and Compensation",
+                        "Severity and Public Notification",
+                        "Necessity and Proportionality"
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The use of force by a State to prevent potential genocide without prior Security Council authorization is associated with the controversial doctrine of:",
+                    type: "multiple",
+                    options: [
+                        "Pre-emptive Self-Defence",
+                        "Humanitarian Intervention/R2P",
+                        "Good Offices",
+                        "Force Majeure"
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Under ARSIWA principles, a lawful act of self-defence would be considered a:",
+                    type: "multiple",
+                    options: [
+                        "Circumstance Precluding Wrongfulness",
+                        "Non-Forcible Measure",
+                        "Mandatory Consequence of Responsibility",
+                        "Jus Cogens Breach"
+                    ],
+                    correctAnswer: 0
+                },
+                // True/False Questions 16-30
+                {
+                    text: "The VCLT allows a State to make any reservation, even if it is incompatible with the object and purpose of the treaty.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If a State makes a simple objection to a reservation, the treaty does not enter into force between the two States.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The general rule for treaty interpretation (VCLT, Art. 31) focuses on the 'ordinary meaning' of the terms.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Absolute Invalidity (Void) can be cured or waived if the parties agree later.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Relative Invalidity (Voidable) applies when a treaty conflicts with a Jus Cogens norm.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The foundational rule prohibiting the use of force is enshrined in Article 2(4) of the UN Charter.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The prohibition on the use of force is generally considered binding only as a treaty rule, not as customary international law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The UN Charter recognizes the right to individual or collective self defence as an inherent, pre-existing right.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Self-defence under Article 51 requires the Security Council's prior authorization before any defensive action can be taken.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Customary international law requires that defensive measures taken under Article 51 must be necessary and proportional to the armed attack sustained.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Security Council's authority to use force is found in Chapter VI of the UN Charter.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The Council must first make a determination of a threat to the peace, breach of the peace, or act of aggression before taking coercive measures.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Sanctions regimes, such as the complete interruption of economic relations, fall under the non-forcible measures of Article 41.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Article 42 grants the Security Council the authority to directly deploy its own standing UN armed forces in a military operation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The prevailing legal view maintains that pre-emptive selfdefence (against a merely potential attack) is not lawful under Article 51.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                }
+            ];
+
+            // ========== Family Law (قانون الأسرة) ==========
+            // Exam 1: 25 True/False Questions in Arabic
+            examData.family.quiz1.questions = [
+                {
+                    text: "لا يجوز للمسلم أن يتزوج من امرأة غير مسلمة (كتابية)",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "لا يجوز للمرأة البالغة العاقلة أن تزوج نفسها إلا من كفئ وبمهر المثل وإلا كان الزواج غير لازم",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "إذا خالف القبول الايجاب فإن الزواج ينعقد",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "الموافقة الضمنية في عقد الزواج تكون لمصلحة الموجب",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "لا بد من الصيغة أن تكون منجزة أي تدل على إنشاء عقد الزواج في الحال",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "الشروط التي تنافي مقتضى عقد الزواج تكون باطلة في نفسها لكن العقد صحيح",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "الراجح في زواج الشغار صحته وإعطاء كل زوجة مهر مثلها",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "ذهب الجمهور إلى أن الصيغة التي استعملت في انشاء عقد الزواج مؤبدة",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "ذهب أهل السنة إلى أن زواج المتعة لا يكون صحيحًا مطلقًا",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "إذا زوجت المرأة العاقلة البالغة نفسها يشترط أن يكون الزواج من كفء وبمهر المثل",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "يشترط في الصيغة اتخاذ مجلس الايجاب والقبول",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "لا يجوز للمرأة أن تشترط على الرجل أن يطلق ضرتها",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "لا يجوز للزوجة أن تطالب زوجها بالمهر أمام المحكمة إلا بقسيمة الزواج الرسمية في حالة الانكار",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "ينعقد الزواج بالتعاطي",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "عقد رجل زواجه من أخت زوجته المعتدة من طلاق رجعي، فسد الزواج",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "إذا اتفق الزوجان مع الشاهدان على كتمان عقد الزواج وعدم اعلانه للناس كان الزواج فاسدًا",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "تستحق الزوجة من زواج فاسد نفقة",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "لا يجوز للمسلم أن يتزوج من امرأة غير مسلمة (كتابية)",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "إذا كان بالزواج عيب مستحكم كان للولي طلب الفسخ",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "يفسد الزواج إذا فقد شرطًا من شروط صحته",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "إذا فقد الزواج شرطًا من شروط النفاذ كان موقوفًا",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "لا ينعقد الزواج إلا بالكتابة من الأخرس إذا كان يعرف الكتابة",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "يجوز للرجل أن يشترط عدم الانفاق على زوجته",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "يجوز أن يتولى شخص واحد عقد الزواج إذا كان له حق تمثيل كل من الزوج والزوجة",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "يشترط في القبول لفظ معين",
+                    type: "truefalse",
+                    options: ["صح", "خطأ"],
+                    correctAnswer: 1
+                }
+            ];
+
+            // Exam 2: 20 Multiple Choice Questions in Arabic
+            examData.family.quiz2.questions = [
+                {
+                    text: "ذهب ......إلى أن زواج الفضولي ينعقد موقوفًا على إجازة صاحب الشأن.",
+                    type: "multiple",
+                    options: ["المالكية", "الشافعية", "الحنابلة", "الامام أبو يوسف"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "قال الرجل للمرأة: تزوجتك بعد شهر فقالت قبلت هذا العقد:",
+                    type: "multiple",
+                    options: ["ينعقد", "لا ينعقد مطلقًا", "ينعقد بعد مرور الزمن", "لا شيء مما سبق"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "ذهب ......إلى أن زواج الشغار يكون فاسد من أساسه",
+                    type: "multiple",
+                    options: ["الأحناف", "المالكية", "الشافعية", "الجمهور"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "ذهب ......أن الشهادة ليست شرطًا لصحة عقد الزواج",
+                    type: "multiple",
+                    options: ["الأحناف", "المالكية", "الشافعية", "الشيعة الجعفرية"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "ذهب ......إلى أنه تجوز شهادة غير المسلمين على زواج الكتابية بالمسلم حتى لو كان الشهود مختلفين معها في الدين",
+                    type: "multiple",
+                    options: ["أبوحنيفة وأبو يوسف", "المالكية", "الشافعية", "الحنابلة"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "من شروط...... أن لا يكون بالزوج عيب مستحكم",
+                    type: "multiple",
+                    options: ["الانعقاد", "الصحة", "النفاذ", "اللزوم"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "اشترط القانون ألا تقل سن الزوجة أو الزوج عن",
+                    type: "multiple",
+                    options: ["سنة 15", "سنة 16", "سنة 17", "سنة 18"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "الزواج...... الذي فقد شرطاً من شروط الصحة",
+                    type: "multiple",
+                    options: ["الصحيح", "الباطل", "الفاسد", "الموقوف"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "الزواج...... الذي حدث خلل في ركن من أركانه أو فقد شرطاً من شروط انعقاده",
+                    type: "multiple",
+                    options: ["الصحيح", "الباطل", "الفاسد", "الموقوف"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "من شروط...... إذا تولى مباشرة عقد الزواج غير الزوجين فيجب أن يكون لكل من العاقدين سلطة شرعية",
+                    type: "multiple",
+                    options: ["الانعقاد", "الصحة", "النفاذ", "اللزوم"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "من أسباب المحرمات على سبيل التأبيد",
+                    type: "multiple",
+                    options: ["القرابة النسبية", "المصاهرة", "الرضاع", "كل ما سبق"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "اتفق الفقهاء على ان من حق الخاطب ان يسترد؟",
+                    type: "multiple",
+                    options: ["الهدايا", "الشبكة", "المهر", "كل ما سبق"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "الزواج...الذي استوفى أركانه وتحققت فيه شروط انعقاده وتوافرت فيه شروط صحته لكنه فقد شرط من شروط نفاذه",
+                    type: "multiple",
+                    options: ["صحيح", "باطل", "فاسد", "موقوف"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "من شروط الخِطبة",
+                    type: "multiple",
+                    options: [
+                        "خلو المرأة من الموانع الشرعية",
+                        "عدم خِطبتها من الغير",
+                        "أ، ب معًا",
+                        "لا شيء مما سبق"
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "ذهب الامام...الى انه لا تحرم البنت من السفاح على ابيها",
+                    type: "multiple",
+                    options: ["أبوحنيفة", "مالك", "الشافعي", "أحمد بن حنبل"],
+                    correctAnswer: 2
+                },
+                {
+                    text: "المعتدة من طلاق رجعي يجوز خطبتها",
+                    type: "multiple",
+                    options: ["تصريحيًا", "تعريضًا", "أ، ب معًا", "لا تصريحيًا ولا تعريضيًا"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "اتفق الفقهاء على أن المعتدة من طلاق بائن ولكن يحل نكاحها لزوجها كالمختلعة لا يجوز خطبتها",
+                    type: "multiple",
+                    options: ["تصريحيًا", "تعريضيًا", "أ، ب معًا", "كل ما سبق"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "الراجح: ان الرجل اذا خطب امراة مخطوبة خطبة كاملة وعقد زواجه عليها كان عقده",
+                    type: "multiple",
+                    options: ["غير صحيح", "يفسخ قبل الدخول", "لا يفسخ بعد الدخول", "صحيح"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "ذهب...الى ان للخاطب يسترد ما أهداه لمخطوبته اذا كان باقيا اما اذا كان هالكا او مستهلكا فليس له الحق ان يسترده",
+                    type: "multiple",
+                    options: ["الجمهور", "المالكية", "الشافعية", "الاحناف"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "من شروط...أن لا يكون هناك تغرير بالزوجة",
+                    type: "multiple",
+                    options: ["الانعقاد", "الصحة", "اللزوم", "النفاذ"],
+                    correctAnswer: 2
+                }
+            ];
+
+            // ========== Civil Law Exams ==========
+            // Exam 1: Questions 1-33 from PDF
+            examData.civil.quiz1.questions = [
+                // Questions 1-14: Nullification of the contract
+                {
+                    text: "The absence of one of the pillars of the contract (consent, object, cause) results in absolute nullity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Relative nullity occurs when there is an absence of one of the pillars of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "In the case of absolute nullity, the contract is void and has no effect.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "When part of a contract is void or voidable, that part alone will be annulled, unless it is established that the contract would not have been entered into without such a part.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A voidable contract has no effects before a judgment of nullity is issued.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The right to invoke relative nullity is granted to any person interested in the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Relative nullity can be ordered by the court on its own initiative.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Nullity can disappear by the ratification of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is the result of absolute nullity?",
+                    type: "multiple",
+                    options: [
+                        "The contract is voidable but still valid.",
+                        "The contract is void and has no effect.",
+                        "The contract can be ratified after a certain period.",
+                        "The contract is voidable by the interested party."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following can render a contract voidable?",
+                    type: "multiple",
+                    options: [
+                        "Lack of object.",
+                        "Absence of consent.",
+                        "Mistake, fraud, or duress.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following situations can result in absolute nullity?",
+                    type: "multiple",
+                    options: [
+                        "Lack of object.",
+                        "Absence of consent.",
+                        "Unlawful cause.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Nullity lawsuits are prescribed after from the date of conclusion of the contract after:",
+                    type: "multiple",
+                    options: ["3 years.", "15 years.", "2 years.", "One year."],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Who has the right to invoke the relative nullity of a contract?",
+                    type: "multiple",
+                    options: [
+                        "A minor or a person with reduced capacity.",
+                        "Every person having an interest in the contract.",
+                        "Only the party who is entitled to the contract's benefits.",
+                        "Anyone who witnessed the contract."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The prescription of relative nullity lawsuit is from the date of discovering the vice or incapacity after:",
+                    type: "multiple",
+                    options: ["15 years.", "3 years.", "2 years.", "One year"],
+                    correctAnswer: 3
+                },
+                // Questions 15-26: The subject and cause of the contract
+                {
+                    text: "A contract is void if the object of the obligation is an impossible act.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Futuristic things can't be an object of an obligation according to the Egyptian Civil Code.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The debtor is obligated to give something of medium quality if the object isn't specified in terms of quality.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The object of the contract must always be within the circle of dealing by law.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "If the object of the contract is a sum of money, the debtor is bound only to the extent of the actual figure of the sum of money stated in the contract, regardless of any changes in value.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The cause of a contract is the motive behind contracting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A contract is valid if its cause is contrary to public policy or morality.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The object of the contract must be determined or determinable, or the contract will be void.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following objects is outside the circle of dealing by law?",
+                    type: "multiple",
+                    options: ["Real estate.", "Public assets.", "Money.", "Personal belongings."],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following, if met, would make the contract void?",
+                    type: "multiple",
+                    options: [
+                        "It must be existed or can be existed.",
+                        "It must be determined or determinable.",
+                        "It must be undeniable (outside the circle of dealing).",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "If a contract is made without a lawful cause, what happens:",
+                    type: "multiple",
+                    options: [
+                        "The contract is valid.",
+                        "The contract is void.",
+                        "The contract is voidable.",
+                        "The contract is valid with special conditions."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is required for the object of a contract to be valid?",
+                    type: "multiple",
+                    options: [
+                        "It must be possible to exist.",
+                        "It must be impossible.",
+                        "It must be undefined.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 0
+                },
+                // Questions 27-33: Acceptance
+                {
+                    text: "Acceptance is the offeree's intent to agree to all terms of the offer.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Acceptance must be expressed after the offer has expired.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Silence can sometimes be considered acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acceptance must coincide with the terms of the offer.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Egyptian civil code considers a contract to be concluded when the offered dispatches his acceptance to the offeror, if he isn't present at the contracting meeting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is the definition of acceptance in contracts?",
+                    type: "multiple",
+                    options: [
+                        "A promise to negotiate terms.",
+                        "A declaration of intent to agree to all terms of the offer.",
+                        "A refusal of the offer.",
+                        "An expression of dissatisfaction with the offer."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "According to the Egyptian civil code, when must the acceptance be expressed?",
+                    type: "multiple",
+                    options: [
+                        "At any time after the offer.",
+                        "During the period when the offer still exists.",
+                        "Only when both parties are present.",
+                        "After the contract meeting ends."
+                    ],
+                    correctAnswer: 1
+                }
+            ];
+
+            // Exam 2: Questions 34-66 from PDF
+            examData.civil.quiz2.questions = [
+                // Questions 34-42: Acceptance (continued)
+                {
+                    text: "If the acceptance modifies the original offer, a new offer is created that requires a new acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "In a contract of adhesion, the offeree has equal bargaining power as the offeror.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The moment of acceptance is the same as the moment of conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The Egyptian civil code states that contracts between absentees are concluded when the offeror has knowledge of the acceptance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acceptance that comes after the termination of the contract meeting is considered valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Which of the following is true regarding silence in contracts?",
+                    type: "multiple",
+                    options: [
+                        "Silence always constitutes acceptance.",
+                        "Silence never indicates acceptance.",
+                        "Silence can be considered acceptance in certain circumstances.",
+                        "Silence invalidates the offer."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "In contracts between two parties present at one meeting, the moment of acceptance is the same as the moment of......",
+                    type: "multiple",
+                    options: ["negotiation", "conclusion of the contract", "offer", "silence"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Silence does not constitute acceptance, except in circumstances where......indicates assent.",
+                    type: "multiple",
+                    options: [
+                        "previous dealings.",
+                        "commercial custom.",
+                        "voluntary performance of the offer.",
+                        "all of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The moment of acceptance in contracts between absentees occurs when the......of acceptance is made to the offeror.",
+                    type: "multiple",
+                    options: ["declaration.", "knowledge.", "dispatch.", "receipt."],
+                    correctAnswer: 1
+                },
+                // Questions 43-57: Consent - offer
+                {
+                    text: "The manifestation of will can be both express and implied according to the Egyptian Civil Code.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A declaration of intention becomes effective once it is sent, regardless of whether the intended recipient has received it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Death of the declarant affects the validity of the declaration of intention in all cases.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An offer must include all essential elements of the contract to be valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An irrevocable offer can be revoked by the offeror at any time.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "If the offeree does not accept an offer within a specified time, the offer automatically expires.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The concordance of wills occurs when one person makes an offer and the other accepts it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An acceptance made after the expiration of the offer is considered valid and concludes the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An irrevocable offer can be terminated by the offeree rejecting it.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An offer can be revoked by the offeror at any time before the end of the contract meeting.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "An irrevocable offer is one that:",
+                    type: "multiple",
+                    options: [
+                        "Can be revoked at any time.",
+                        "Cannot be revoked during a specified time period",
+                        "Is always valid."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "What is the effect of a declaration of intention according to the Egyptian Civil Code?",
+                    type: "multiple",
+                    options: [
+                        "It is effective upon being made.",
+                        "It requires formal registration.",
+                        "It is effective when it comes to the knowledge of the intended person.",
+                        "It is never effective."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What type of offer cannot be revoked during a specified period?",
+                    type: "multiple",
+                    options: ["Revocable offer", "Tentative offer", "Conditional offer", "Irrevocable offer"],
+                    correctAnswer: 3
+                },
+                {
+                    text: "what happens if the contract meeting expires without acceptance?",
+                    type: "multiple",
+                    options: [
+                        "The offer remains valid.",
+                        "The offer is automatically accepted.",
+                        "The offer is terminated.",
+                        "The parties can renegotiate indefinitely."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "What term describes the mutual agreement between contracting parties?",
+                    type: "multiple",
+                    options: ["Offer", "Consent", "Invitation to treat", "Counteroffer"],
+                    correctAnswer: 1
+                },
+                // Questions 58-66: Aspects of Consent (Legal capacity)
+                {
+                    text: "Existence of consent (offer and acceptance) alone is enough to form a contract and doesn't require it to be made by a person with legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Legal capacity is the ability to hold rights and duties and to exercise those rights and duties.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A minor who is between the ages of 7 and 21 has limited legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                }
+            ];
+
+            // Exam 3: Questions 67-98 from PDF
+            examData.civil.quiz3.questions = [
+                // Questions 67-73: Legal capacity (continued)
+                {
+                    text: "A minor who is 15 years old can manage their own earnings from work.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "All acts made by a minor (under the age of seven) are void.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "All acts made by a minor (between 7 and 21) are valid.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The insane person has the same legal capacity like a minor lacking discretion.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A person with dual disabilities can legally dispose of their property without judicial assistance.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "An adult (21 years and above) has full legal capacity to exercise their civil rights.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acts of a prodigal and an idiot are governed by the provisions related to the acts of a minor possessing discretion, so they have limited legal capacity.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acts performed by a minor under the age of 7 are:",
+                    type: "multiple",
+                    options: ["Void.", "Valid.", "Voidable.", "Null."],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The acts performed by a minor between the ages of 7 and 21 that are between benefit and detriment are:",
+                    type: "multiple",
+                    options: ["Void.", "Valid.", "Voidable.", "All of the above."],
+                    correctAnswer: 2
+                },
+                {
+                    text: "A person who has reached the age of 21 is considered to be:",
+                    type: "multiple",
+                    options: [
+                        "Full legal capacity.",
+                        "Limited legal capacity.",
+                        "Restricted legal capacity.",
+                        "Lacking legal capacity."
+                    ],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Which of the following is considered an impediment to legal capacity:",
+                    type: "multiple",
+                    options: [
+                        "An absent person.",
+                        "Insane and imbecile persons.",
+                        "Person sentenced.",
+                        "A person with dual disability."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A person who is declared absent and there is no one to manage their affairs for more than a year, the court may appoint an……to manage their interests.",
+                    type: "multiple",
+                    options: ["Guardian.", "Judicial assistant.", "Trustee.", "Agent."],
+                    correctAnswer: 3
+                },
+                {
+                    text: "If a person is affected by dual disability and is unable to express his intent, it shall be permissible for the judge to appoint a …… to help him in his dispositions.",
+                    type: "multiple",
+                    options: ["Guardian.", "Judicial assistant.", "Trustee.", "Agent."],
+                    correctAnswer: 1
+                },
+                // Questions 74-83: Vices of consent
+                {
+                    text: "A mistake is considered one of the vices of consent in contracts, even if it is not an essential mistake.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Fraud requires that the other party has practiced artifices that led to the conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Exploitation occurs when one party's obligations in the contract are out of proportion to the benefits they receive or to the obligations of the other party.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Duress is considered one of the vices of consent that leads to the annulment of the contract if it only relates to danger to life, or body.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The contract is considered void if a person has made a mistake that affects the quality of the thing which both parties have considered essential in the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "A mistake in the identity or one of the qualities of the other contracting party is considered an essential mistake even if this identity or quality was not the principal factor in the conclusion of the contract.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "False or misleading statement or an omission made by one party is considered:",
+                    type: "multiple",
+                    options: ["Mistake.", "Fraud.", "Duress.", "Exploitation."],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A mistake is considered essential if it has a bearing on:",
+                    type: "multiple",
+                    options: [
+                        "The identity or the essential quality of the person involved in the contract.",
+                        "The value of the contract.",
+                        "The essential quality of the thing in the contract.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "The exploitation vice requires:",
+                    type: "multiple",
+                    options: [
+                        "A threat to life or property.",
+                        "A disproportion between obligations and benefits.",
+                        "A mutual mistake.",
+                        "A contract is made under duress."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The vice of consent that involves a threat of serious and imminent danger to life, limb, honour, or property is called ……",
+                    type: "multiple",
+                    options: ["Duress.", "Mistake.", "Fraud.", "Exploitation."],
+                    correctAnswer: 0
+                },
+                // Questions 84-98: Liability for personal acts
+                {
+                    text: "The fault is based only on material factors, ignoring mental discretion.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The fault is defined as a deviation from the normal behavior of an average person.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Legitimate defense allows a person to cause injury to another without being responsible, as long as they do not exceed the necessary measure of defense.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Moral damage relates to harm done to a person's feelings or reputation.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Material damage is the loss of property or financial rights.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "The loss of opportunity cannot be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "A person is not liable for damages if the cause of the injury is beyond their control, such as force majeure.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "Contingent damage can be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 1
+                },
+                {
+                    text: "The future damage can be compensated.",
+                    type: "truefalse",
+                    options: ["True", "False"],
+                    correctAnswer: 0
+                },
+                {
+                    text: "What does the liability for personal acts generally require?",
+                    type: "multiple",
+                    options: [
+                        "A person's fault.",
+                        "Causality between fault and damage.",
+                        "Causing harm to others.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 3
+                },
+                {
+                    text: "What condition must be met for future damage to be compensable?",
+                    type: "multiple",
+                    options: [
+                        "It must be a contingent damage.",
+                        "It must be an inevitable future loss.",
+                        "It must be indirect.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 1
+                },
+                {
+                    text: "Under the concept of causality, liability arises if……",
+                    type: "multiple",
+                    options: [
+                        "The damage was caused by an unforeseeable event.",
+                        "The cause is indirect.",
+                        "the damage is caused by the fault.",
+                        "All of the above."
+                    ],
+                    correctAnswer: 2
+                },
+                {
+                    text: "Which of the following does NOT represent a situation in which liability might be excluded?",
+                    type: "multiple",
+                    options: ["Legitimate defense.", "Executing an order from a superior.", "A state of necessity.", "Negligence."],
+                    correctAnswer: 3
+                },
+                {
+                    text: "Which of the following is needed to prove fault in a personal injury case?",
+                    type: "multiple",
+                    options: [
+                        "Proving the deviation from the average person's behavior",
+                        "Proving the damage was caused intentionally.",
+                        "Proving the damage was only financial.",
+                        "None of the above."
+                    ],
+                    correctAnswer: 0
+                }
+            ];
+        }
+
+        // ========== نظام الإحصائيات ==========
+        function saveResult(subject, exam, score, totalQuestions) {
+            const results = getStoredResults();
+            const result = {
+                id: Date.now(),
+                subject: subject,
+                exam: exam,
+                score: score,
+                total: totalQuestions,
+                percentage: Math.round((score / totalQuestions) * 100),
+                date: new Date().toLocaleString()
+            };
+            
+            results.push(result);
+            localStorage.setItem('examResults', JSON.stringify(results));
+            return result;
+        }
+
+        function getStoredResults() {
+            const stored = localStorage.getItem('examResults');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function calculateStatistics() {
+            const results = getStoredResults();
+            const stats = {
+                totalExams: results.length,
+                averageScore: 0,
+                bestScore: 0,
+                subjects: {},
+                recentResults: results.slice(-10).reverse()
+            };
+            
+            if (results.length > 0) {
+                const totalScore = results.reduce((sum, r) => sum + r.percentage, 0);
+                stats.averageScore = Math.round(totalScore / results.length);
+                stats.bestScore = Math.max(...results.map(r => r.percentage));
+                
+                results.forEach(result => {
+                    if (!stats.subjects[result.subject]) {
+                        stats.subjects[result.subject] = {
+                            count: 0,
+                            totalScore: 0,
+                            bestScore: 0
+                        };
+                    }
+                    
+                    stats.subjects[result.subject].count++;
+                    stats.subjects[result.subject].totalScore += result.percentage;
+                    stats.subjects[result.subject].bestScore = Math.max(
+                        stats.subjects[result.subject].bestScore, 
+                        result.percentage
+                    );
+                });
+            }
+            
+            return stats;
+        }
+
+        function displayStatistics() {
+            const stats = calculateStatistics();
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalExams}</div>
+                    <div class="stat-label">Total Exams</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.averageScore}%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.bestScore}%</div>
+                    <div class="stat-label">Best Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Object.keys(stats.subjects).length}</div>
+                    <div class="stat-label">Subjects</div>
+                </div>
+            `;
+            
+            historyList.innerHTML = '';
+            if (stats.recentResults.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No exams taken yet</p>';
+            } else {
+                stats.recentResults.forEach(result => {
+                    const subjectNames = {
+                        humanitarian: "Humanitarian Law",
+                        general: "Public International Law",
+                        civil: "Civil Law",
+                        family: "Family Law"
+                    };
+                    
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div>
+                            <div class="history-subject">${subjectNames[result.subject] || result.subject} - ${result.exam}</div>
+                            <div class="history-date">${result.date}</div>
+                        </div>
+                        <div class="history-score" style="color: ${result.percentage >= 70 ? '#2ecc71' : result.percentage >= 50 ? '#f39c12' : '#e74c3c'}">
+                            ${result.percentage}%
+                        </div>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            }
+        }
+
+        function showStats() {
+            document.querySelector('.screen.active').classList.remove('active');
+            statsScreen.classList.add('active');
+            displayStatistics();
+        }
+
+        function clearStatistics() {
+            if (confirm("Are you sure you want to clear all statistics? This action cannot be undone.")) {
+                localStorage.removeItem('examResults');
+                displayStatistics();
+            }
+        }
+
+        // ========== وظائف التنقل ==========
+        function showScreen(screenId) {
+            document.querySelector('.screen.active').classList.remove('active');
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function backToLogin() {
+            showScreen('loginScreen');
+        }
+
+        // ========== تسجيل الدخول ==========
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+
+            if (username.length < 4) {
+                loginError.style.display = 'block';
+                return;
+            }
+
+            currentUser = { username: username };
+            loginError.style.display = 'none';
+            userNameSubject.textContent = currentUser.username;
+            showScreen('subjectScreen');
+            
+            initializeSubjectSelector();
+            
+            playIslamicAudio();
+        }
+
+        // ========== اختيار المادة ==========
+        function initializeSubjectSelector() {
+            const subjectBtns = subjectSelector.querySelectorAll('.subject-btn');
+            subjectBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    subjectBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSubject = this.dataset.subject;
+                });
+            });
+        }
+
+        function selectSubject() {
+            userNameWelcome.textContent = currentUser.username;
+            
+            const subjectNames = {
+                humanitarian: "International Humanitarian Law",
+                general: "Public International Law",
+                civil: "Civil Law",
+                family: "Family Law"
+            };
+            selectedSubjectText.textContent = `Select exam for ${subjectNames[currentSubject]}`;
+            
+            playIslamicAudio();
+            
+            initializeExamSelection();
+            showScreen('welcomeScreen');
+        }
+
+        // ========== اختيار الامتحان ==========
+        function initializeExamSelection() {
+            const exams = examData[currentSubject];
+            welcomeQuizSelector.innerHTML = '';
+            
+            Object.keys(exams).forEach((examKey, index) => {
+                const exam = exams[examKey];
+                const examBtn = document.createElement('div');
+                examBtn.className = `subject-btn ${index === 0 ? 'active' : ''}`;
+                examBtn.dataset.quiz = examKey;
+                
+                examBtn.innerHTML = `
+                    <div class="subject-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>${exam.title}</div>
+                `;
+                
+                examBtn.addEventListener('click', function() {
+                    welcomeQuizSelector.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentQuiz = this.dataset.quiz;
+                });
+                
+                welcomeQuizSelector.appendChild(examBtn);
+            });
+        }
+
+        function backToSubject() {
+            showScreen('subjectScreen');
+        }
+
+        // ========== بدء الامتحان ==========
+        function startQuiz() {
+            userName = currentUser.username;
+            userNameSpan.textContent = userName;
+            
+            timerContainer.style.display = 'block';
+            timeUp = false;
+            
+            shuffleQuestions();
+            
+            const questions = getCurrentQuestions();
+            totalTimeLeft = questions.length * 120; // 2 دقائق لكل سؤال
+            
+            startTotalTimer();
+            loadQuestion();
+            showScreen('quizScreen');
+        }
+
+        function getCurrentQuestions() {
+            const exams = examData[currentSubject];
+            return shuffledQuestions[currentQuiz] || exams[currentQuiz].questions;
+        }
+
+        function getCurrentExam() {
+            const exams = examData[currentSubject];
+            return exams[currentQuiz];
+        }
+
+        function shuffleQuestions() {
+            const exams = examData[currentSubject];
+            const originalQuestions = exams[currentQuiz].questions;
+            shuffledQuestions[currentQuiz] = [...originalQuestions];
+
+            // خلط الأسئلة
+            for (let i = shuffledQuestions[currentQuiz].length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledQuestions[currentQuiz][i], shuffledQuestions[currentQuiz][j]] =
+                    [shuffledQuestions[currentQuiz][j], shuffledQuestions[currentQuiz][i]];
+            }
+
+            // خلط الخيارات داخل كل سؤال
+            shuffledQuestions[currentQuiz].forEach(question => {
+                if (question.type === "multiple") {
+                    const originalOptions = [...question.options];
+                    const originalCorrectAnswer = question.correctAnswer;
+                    const correctAnswerText = originalOptions[originalCorrectAnswer];
+
+                    for (let i = originalOptions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [originalOptions[i], originalOptions[j]] = [originalOptions[j], originalOptions[i]];
+                    }
+
+                    question.correctAnswer = originalOptions.indexOf(correctAnswerText);
+                    question.options = originalOptions;
+                }
+            });
+
+            currentQuestionIndex = 0;
+            userAnswers = {};
+        }
+
+        // ========== المؤقت ==========
+        function startTotalTimer() {
+            updateTotalTimerDisplay();
+
+            clearInterval(timer);
+            timer = setInterval(function () {
+                if (timeUp) {
+                    clearInterval(timer);
+                    return;
+                }
+                
+                totalTimeLeft--;
+                updateTotalTimerDisplay();
+
+                if (totalTimeLeft <= 0) {
+                    clearInterval(timer);
+                    timeUp = true;
+                    showTimeUpMessage();
+                    setTimeout(() => {
+                        calculateResults();
+                        showResults();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function updateTotalTimerDisplay() {
+            const minutes = Math.floor(totalTimeLeft / 60);
+            const seconds = totalTimeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (totalTimeLeft <= 60) {
+                timerDisplay.style.color = '#d32f2f';
+                timerContainer.classList.add('timer-warning');
+            } else if (totalTimeLeft <= 300) {
+                timerDisplay.style.color = '#f39c12';
+                timerContainer.classList.remove('timer-warning');
+            } else {
+                timerDisplay.style.color = '#ffd700';
+                timerContainer.classList.remove('timer-warning');
+            }
+        }
+
+        function showTimeUpMessage() {
+            const timeUpDiv = document.createElement('div');
+            timeUpDiv.className = 'time-up-message';
+            timeUpDiv.innerHTML = `
+                <h2><i class="fas fa-hourglass-end"></i> Time's Up!</h2>
+                <p>The exam has been automatically submitted.</p>
+                <p>Your answers are being evaluated...</p>
+            `;
+            document.body.appendChild(timeUpDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(timeUpDiv);
+            }, 3000);
+        }
+
+        // ========== عرض الأسئلة ==========
+        function loadQuestion() {
+            if (timeUp) return;
+            
+            const exam = getCurrentExam();
+            const questions = getCurrentQuestions();
+            const question = questions[currentQuestionIndex];
+
+            quizTitle.textContent = exam.title;
+            questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            // تحديد ما إذا كان السؤال بالعربية
+            if (question.text.includes('لا يجوز') || question.text.includes('ذهب')) {
+                questionText.classList.add('arabic-text');
+                questionText.style.textAlign = 'right';
+                questionText.style.direction = 'rtl';
+            } else {
+                questionText.classList.remove('arabic-text');
+                questionText.style.textAlign = 'left';
+                questionText.style.direction = 'ltr';
+            }
+            
+            questionText.textContent = question.text;
+
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                
+                // تحديد ما إذا كان الخيار بالعربية
+                if (option.includes('صح') || option.includes('ذهب') || option.includes('ال')) {
+                    optionElement.classList.add('arabic-text');
+                    optionElement.style.textAlign = 'right';
+                    optionElement.style.direction = 'rtl';
+                }
+                
+                if (userAnswers[currentQuestionIndex] === index) {
+                    optionElement.classList.add('selected');
+                }
+
+                optionElement.innerHTML = option;
+                
+                optionElement.addEventListener('click', () => {
+                    selectOption(index);
+                });
+                
+                optionsContainer.appendChild(optionElement);
+            });
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'Finish Exam' : 'Next';
+
+            resultsSummary.style.display = 'none';
+        }
+
+        function selectOption(index) {
+            if (timeUp) return;
+            
+            userAnswers[currentQuestionIndex] = index;
+            loadQuestion();
+        }
+
+        function goToPreviousQuestion() {
+            if (timeUp) return;
+            
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function goToNextQuestion() {
+            if (timeUp) return;
+            
+            const questions = getCurrentQuestions();
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                clearInterval(timer);
+                calculateResults();
+                showResults();
+            }
+        }
+
+        // ========== النتائج ==========
+        function calculateResults() {
+            const questions = getCurrentQuestions();
+            let correctCount = 0;
+
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = Math.round((correctCount / questions.length) * 100);
+            
+            quizResults[currentQuiz] = {
+                correct: correctCount,
+                total: questions.length,
+                percentage: percentage
+            };
+
+            // حفظ النتيجة
+            const subjectNames = {
+                humanitarian: "International Humanitarian Law",
+                general: "Public International Law",
+                civil: "Civil Law",
+                family: "Family Law"
+            };
+
+            saveResult(
+                subjectNames[currentSubject] || currentSubject,
+                getCurrentExam().title,
+                correctCount,
+                questions.length
+            );
+        }
+
+        function showResults() {
+            const results = quizResults[currentQuiz];
+            const questions = getCurrentQuestions();
+
+            scoreDisplay.textContent = `${results.percentage}%`;
+            scoreText.textContent = `You answered ${results.correct} out of ${results.total} questions correctly`;
+            correctAnswers.textContent = `Correct Answers: ${results.correct}`;
+            incorrectAnswers.textContent = `Incorrect Answers: ${results.total - results.correct}`;
+
+            reviewContainer.innerHTML = '<h3 style="color: var(--secondary); margin-bottom: 15px;">Question Review</h3>';
+
+            questions.forEach((question, index) => {
+                const isCorrect = userAnswers[index] === question.correctAnswer;
+
+                if (!isCorrect) {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = `review-item incorrect`;
+
+                    const userAnswerIndex = userAnswers[index];
+                    const correctAnswerIndex = question.correctAnswer;
+
+                    // تحديد ما إذا كان بالعربية
+                    if (question.text.includes('لا يجوز') || question.text.includes('ذهب')) {
+                        reviewItem.classList.add('arabic-text');
+                        reviewItem.style.textAlign = 'right';
+                        reviewItem.style.direction = 'rtl';
+                    }
+
+                    reviewItem.innerHTML = `
+                        <div class="review-question"><strong>Q:</strong> ${question.text}</div>
+                        <div class="review-answer"><strong>Your answer:</strong> <span style="color: var(--accent);">${userAnswerIndex !== undefined ? question.options[userAnswerIndex] : 'Not answered'}</span></div>
+                        <div class="review-answer"><strong>Correct answer:</strong> <span style="color: var(--success);">${question.options[correctAnswerIndex]}</span></div>
+                    `;
+
+                    reviewContainer.appendChild(reviewItem);
+                }
+            });
+
+            timerContainer.style.display = 'none';
+            resultsSummary.style.display = 'block';
+
+            let message = "";
+            
+            if (results.percentage >= 90) {
+                message = "Excellent! Outstanding performance.";
+            } else if (results.percentage >= 70) {
+                message = "Very good! Great performance.";
+            } else if (results.percentage >= 50) {
+                message = "Acceptable! You can improve.";
+            } else {
+                message = "Needs improvement. Try again.";
+            }
+
+            setTimeout(() => {
+                alert(`Congratulations ${userName}!\n\n${message}\nYour score: ${results.percentage}%`);
+            }, 500);
+        }
+
+        function backToQuizzes() {
+            showScreen('welcomeScreen');
+        }
+
+        // ========== تهيئة التطبيق ==========
+        function initializeApp() {
+            // تحميل الأسئلة
+            loadAllQuestions();
+            
+            // إعداد مستمعي الأحداث
+            loginBtn.addEventListener('click', handleLogin);
+            selectSubjectBtn.addEventListener('click', selectSubject);
+            startQuizBtn.addEventListener('click', startQuiz);
+            backToQuizzesBtn.addEventListener('click', backToQuizzes);
+            backToSubjectBtn.addEventListener('click', backToSubject);
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            
+            viewStatsBtn.addEventListener('click', showStats);
+            viewStatsFromResultsBtn.addEventListener('click', showStats);
+            backToLoginBtn.addEventListener('click', backToLogin);
+            backToLoginFromStatsBtn.addEventListener('click', backToLogin);
+            clearStatsBtn.addEventListener('click', clearStatistics);
+            
+            // إدخال Enter لتسجيل الدخول
+            usernameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            
+            // إضافة تأثيرات مرئية
+            addVisualEffects();
+        }
+
+        function addVisualEffects() {
+            // تأثير للعناصر العائمة
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach(el => {
+                el.style.animationDuration = `${15 + Math.random() * 10}s`;
+            });
+            
+            // تأثير للشعار
+            const loginIcon = document.querySelector('.login-icon i');
+            if (loginIcon) {
+                setInterval(() => {
+                    loginIcon.style.transform = 'rotate(5deg)';
+                    setTimeout(() => {
+                        loginIcon.style.transform = 'rotate(-5deg)';
+                    }, 500);
+                }, 1000);
+            }
+        }
+
+        // بدء التطبيق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
